@@ -25,7 +25,7 @@ class Encryption {
    * @param $value Value of what is to be verified
    * @return Boolean
    */
-    public function verify($value, $id){
+    public function verifyPassword($value, $id){
         $res = $this->db->query('SELECT `password` FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
         if (password_verify($value, $res['password'])) return true;
         return false;

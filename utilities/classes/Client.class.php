@@ -51,7 +51,7 @@ class Client {
             $res = $this->db->query('SELECT * FROM `clients` WHERE `email` = ? LIMIT 1', array($email))->fetchAll();
             if(empty($res)) throw die('Invalid email');
             foreach ($res as $client) {
-                $newRes = $this->encrypt->verify($password, $client['id']);
+                $newRes = $this->encrypt->verifyPassword($password, $client['id']);
                 if ($newRes) return $res;
                 throw die('Invalid password');
             }
@@ -72,5 +72,3 @@ class Client {
         return $client;
     }
 }
-
-$client = new Client();

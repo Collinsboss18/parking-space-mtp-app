@@ -113,5 +113,3 @@ class Admin {
         }
     }
 }
-
-$client = new Admin();

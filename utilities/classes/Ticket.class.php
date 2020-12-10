@@ -61,5 +61,3 @@ class Ticket {
         }
     }
 }
-
-$parking = new Ticket();

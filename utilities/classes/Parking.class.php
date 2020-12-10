@@ -92,7 +92,3 @@ class Parking {
         }
     }
 }
-
-$parking = new Parking();
-// $park = $parking->deletePark(10);
-// var_dump($park);

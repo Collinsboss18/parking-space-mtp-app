@@ -6,8 +6,9 @@
  *  Last Modified: Collins <abadaikecollins@gmail.com> <11/09/2020>
  */
 
-include ('./Database.class.php');
-include ('./Encryption.class.php');
+
+if (isset($databasePath)) require_once ($databasePath);
+if (isset($encryptionPath)) require_once ($encryptionPath);
 
 class Client {
     protected $db;
@@ -27,7 +28,7 @@ class Client {
    * @param $statusCode 
    * @return Array
    */
-    public function clientSignUp($name, $email, $password, $statusCode = 201){
+    public function clientSignUp(String $name, $email, $password, $statusCode = 201){
         if (!$name || !$email || !$password) return "Please fill all available inputs";
         try {
             $newPassword = $this->encrypt->encode($password);
@@ -36,7 +37,7 @@ class Client {
             return $this->getClientById($insertedId);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
 
@@ -59,7 +60,7 @@ class Client {
             }
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
 
@@ -76,7 +77,7 @@ class Client {
             return $client;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
 }

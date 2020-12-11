@@ -33,7 +33,7 @@ class Encryption {
             return false;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
 }

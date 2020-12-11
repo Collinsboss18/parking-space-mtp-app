@@ -31,7 +31,7 @@ class Ticket {
             return $this->getTicketById($insertedId);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
    
@@ -48,7 +48,7 @@ class Ticket {
             return $ticket;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
 
@@ -64,7 +64,7 @@ class Ticket {
             return "Successfully reversed purchased";
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
 }

@@ -32,13 +32,13 @@ class Admin {
             $res = $this->db->query('SELECT * FROM `clients` WHERE `email` = ? AND `is_admin` = ? LIMIT 1', array($email, 1))->fetchAll();
             if(empty($res)) return 'This client is not an admin';
             foreach ($res as $client) {
-                $newRes = $this->encrypt->verify($password, $client['id']);
+                $newRes = $this->encrypt->verifyPassword($password, $client['id']);
                 if ($newRes) return $res;
                 return 'Invalid password';
             }
         }catch (Exception $e) {
-            // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            // throw new Exception($e);
+            return $e;
         }
     }
 
@@ -52,12 +52,13 @@ class Admin {
     try{
         $res = $this->db->query('SELECT * FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
         if ($this->isAdmin($res['is_admin']) == TRUE) {
-            return $this->db->query('SELECT * FROM `clients` WHERE <> `id`=?', array($user_id))->fetchAll();
+            $res =  $this->db->query('SELECT * FROM `clients` WHERE <> `id`=?', array($id))->fetchAll();
+            return $res;
         }
         return "User is not an admin";
     }catch (Exception $e) {
-        // throw new Exception($e->errorMessage());
-        return $e->errorMessage();
+        // throw new Exception($e);
+        return $e;
     }
 }
 
@@ -77,8 +78,8 @@ class Admin {
             }
             return "User is not an admin";
         }catch (Exception $e) {
-            // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            // throw new Exception($e);
+            return $e;
         }
     }
    
@@ -98,8 +99,8 @@ class Admin {
             }
             return "User is not an admin";
         }catch (Exception $e) {
-            // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            // throw new Exception($e);
+            return $e;
         }
     }
    
@@ -114,8 +115,8 @@ class Admin {
             $res = $this->db->query('SELECT `is_admin` FROM `clients` WHERE id = ?', array($id))->fetchArray();
             return $res['is_admin'];
         }catch (Exception $e) {
-            // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            // throw new Exception($e);
+            return $e;
         }
     }
 }

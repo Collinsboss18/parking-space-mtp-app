@@ -26,7 +26,7 @@ class Parking {
             return $this->db->query('SELECT * FROM `parking`')->fetchAll();
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
    
@@ -43,7 +43,7 @@ class Parking {
         return $park;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
 
@@ -63,7 +63,7 @@ class Parking {
             return $this->getParkById($id);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
    
@@ -84,7 +84,7 @@ class Parking {
             return $this->getParkById($insertedId);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
    
@@ -100,7 +100,7 @@ class Parking {
             return ["msg"=>"Successfully deleted park"];
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
-            return $e->errorMessage();
+            return $e;
         }
     }
 }

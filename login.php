@@ -8,6 +8,11 @@
 </head>
 <body>
 <h1>Login</h1>
+
+<form>
+    
+</form>
+
 <?php include_once('./utilities/includes/script.php') ?>
 </body>
 </html>

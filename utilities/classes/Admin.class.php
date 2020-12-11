@@ -13,6 +13,7 @@ class Admin {
     protected $db;
     protected $encrypt;
 
+    /** Construct __construct */
     public function __construct() {
 		$this->db = new Database();
 		$this->encrypt = new Encryption();
@@ -26,17 +27,18 @@ class Admin {
    * @return Array
    */
     public function adminLogin($email, $password, $statusCode = 200){
-        if (!$email || !$password) throw die('Fill all available input');
+        if (!$email || !$password) return 'Fill all available input';
         try {
             $res = $this->db->query('SELECT * FROM `clients` WHERE `email` = ? AND `is_admin` = ? LIMIT 1', array($email, 1))->fetchAll();
-            if(empty($res)) throw die('This client is not an admin');
+            if(empty($res)) return 'This client is not an admin';
             foreach ($res as $client) {
                 $newRes = $this->encrypt->verify($password, $client['id']);
                 if ($newRes) return $res;
-                throw die('Invalid password');
+                return 'Invalid password';
             }
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
 
@@ -52,9 +54,10 @@ class Admin {
         if ($this->isAdmin($res['is_admin']) == TRUE) {
             return $this->db->query('SELECT * FROM `clients` WHERE <> `id`=?', array($user_id))->fetchAll();
         }
-        throw new Exception("User is not an admin");
+        return "User is not an admin";
     }catch (Exception $e) {
-        echo $e->errorMessage();
+        // throw new Exception($e->errorMessage());
+        return $e->errorMessage();
     }
 }
 
@@ -72,9 +75,10 @@ class Admin {
                 $this->db->query("UPDATE `clients` SET `active`= $active WHERE `id` = ?", array($id));
                 return $active;
             }
-            throw new Exception("User is not an admin");
+            return "User is not an admin";
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
    
@@ -92,9 +96,10 @@ class Admin {
                 $this->db->query("UPDATE `clients` SET `is_admin`= $is_admin WHERE `id` = ?", array($id));
                 return $is_admin;
             }
-            throw new Exception("User is not an admin");
+            return "User is not an admin";
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
    
@@ -109,7 +114,8 @@ class Admin {
             $res = $this->db->query('SELECT `is_admin` FROM `clients` WHERE id = ?', array($id))->fetchArray();
             return $res['is_admin'];
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
 }

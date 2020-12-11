@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file This file that handles connection and interaction with the database
+ * @author COLLINS <abadaikecollins@gmail.com> <11/09/2020>
+ *  Last Modified: Collins <abadaikecollins@gmail.com> <11/09/2020>
+ */
+
 class Database {
 
     protected $connection;
@@ -7,6 +13,7 @@ class Database {
     protected $query_closed = TRUE;
 	public $query_count = 0;
 
+	/** Construct __construct */
 	public function __construct($dbhost = 'localhost', $dbuser = 'root', $dbpass = '', $dbname = 'parking_app', $charset = 'utf8') {
 		$this->connection = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 		if ($this->connection->connect_error) {

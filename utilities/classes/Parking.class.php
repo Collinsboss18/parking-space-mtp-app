@@ -11,6 +11,7 @@ include ('./Database.class.php');
 class Parking {
     protected $db;
 
+    /** Construct __construct */
     public function __construct() {
 		$this->db = new Database();
 	}
@@ -24,7 +25,8 @@ class Parking {
         try{
             return $this->db->query('SELECT * FROM `parking`')->fetchAll();
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
    
@@ -35,15 +37,21 @@ class Parking {
    * @return Array
    */
     public function getParkById($id, $statusCode = 200){
+        try {
         $park = $this->db->query('SELECT * FROM `parking` WHERE id = ?', array($id))->fetchArray();
-        if(empty($park)) throw die('Cant find park with that id');
+        if(empty($park)) return 'Cant find park with that id';
         return $park;
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
+        }
     }
 
    /**
    * This function updates a park
    * @param $id Id of the park
    * @param $location
+   * @param $availableTicket
    * @param $alwaysAvailable
    * @param $timeAvailable
    * @return Array
@@ -54,7 +62,8 @@ class Parking {
             $this->db->query("UPDATE `parking` SET `location`= ?, `price`=?, `available_ticket`=? `always_available`=?, `time_available`=? WHERE `id` = $id", array($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable));
             return $this->getParkById($id);
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
    
@@ -62,6 +71,7 @@ class Parking {
    * This function to create park
    * @param $id Id of the park
    * @param $location
+   * @param $availableTicket
    * @param $alwaysAvailable
    * @param $timeAvailable
    * @return Array
@@ -73,22 +83,24 @@ class Parking {
             $insertedId = $cPark->lastInsertID();
             return $this->getParkById($insertedId);
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
    
     /**
-   * This function to create park
+   * This function to delete a park
    * @param $id Id of the park that is to be deleted
    * @return String
    */
     public function deletePark($id, $statusCode = 200){
-        if (!$id) throw new Exception("Please fill all available inputs");
+        if (!$id) return "Please fill all available inputs";
         try{
             $this->db->query('DELETE FROM `parking` WHERE `id`=?', array($id));
             return ["msg"=>"Successfully deleted park"];
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
 }

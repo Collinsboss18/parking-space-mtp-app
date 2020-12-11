@@ -8,6 +8,7 @@
 class Encryption {
     protected $db;
 
+    /** Construct __construct */
     public function __construct() {
 		$this->db = new Database();
 	}
@@ -26,8 +27,13 @@ class Encryption {
    * @return Boolean
    */
     public function verifyPassword($value, $id){
-        $res = $this->db->query('SELECT `password` FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
-        if (password_verify($value, $res['password'])) return true;
-        return false;
+        try {
+            $res = $this->db->query('SELECT `password` FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
+            if (password_verify($value, $res['password'])) return true;
+            return false;
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
+        }
     }
 }

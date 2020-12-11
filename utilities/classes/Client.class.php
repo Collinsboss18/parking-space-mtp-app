@@ -13,6 +13,7 @@ class Client {
     protected $db;
     protected $encrypt;
 
+    /** Construct __construct */
     public function __construct() {
 		$this->db = new Database();
 		$this->encrypt = new Encryption();
@@ -27,14 +28,15 @@ class Client {
    * @return Array
    */
     public function clientSignUp($name, $email, $password, $statusCode = 201){
-        if (!$name || !$email || !$password) throw new Exception("Please fill all available inputs");
+        if (!$name || !$email || !$password) return "Please fill all available inputs";
         try {
             $newPassword = $this->encrypt->encode($password);
             $client = $this->db->query('INSERT INTO clients (`name`,`email`,`password`) VALUES (?,?,?)', array($name, $email, $newPassword));
             $insertedId = $client->lastInsertID();
             return $this->getClientById($insertedId);
         }catch (Exception $e) {
-            echo $e->errorMessage();
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
 
@@ -46,17 +48,18 @@ class Client {
    * @return Array
    */
     public function clientLogin($email, $password, $statusCode = 200){
-        if (!$email || !$password) throw die('Fill all available input');
+        if (!$email || !$password) return 'Fill all available input';
         try {
             $res = $this->db->query('SELECT * FROM `clients` WHERE `email` = ? LIMIT 1', array($email))->fetchAll();
-            if(empty($res)) throw die('Invalid email');
+            if(empty($res)) return 'Invalid email';
             foreach ($res as $client) {
                 $newRes = $this->encrypt->verifyPassword($password, $client['id']);
                 if ($newRes) return $res;
-                throw die('Invalid password');
+                return 'Invalid password';
             }
-        }catch (Exception $e) {
-            echo $e->errorMessage();
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
         }
     }
 
@@ -67,8 +70,13 @@ class Client {
    * @return Array
    */
     public function getClientById($id, $statusCode = 200){
-        $client = $this->db->query('SELECT * FROM `clients` WHERE id = ?', array($id))->fetchArray();
-        if(empty($client)) throw die('Cant find client with that id');
-        return $client;
+        try {
+            $client = $this->db->query('SELECT * FROM `clients` WHERE id = ?', array($id))->fetchArray();
+            if(empty($client)) return 'Cannot find client with that id';
+            return $client;
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e->errorMessage();
+        }
     }
 }

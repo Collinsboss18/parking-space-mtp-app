@@ -5,9 +5,11 @@ $encryptionPath = '../classes/Encryption.class.php';
 
 require_once('../classes/Action.class.php');
 require_once('../classes/Client.class.php');
+require_once('../classes/Ticket.class.php');
 
 $action = new Action();
 $client = new Client();
+$ticket = new Ticket();
 
 if (isset($_POST['signup'])) {
     try {
@@ -28,6 +30,7 @@ if (isset($_POST['login'])) {
         if (empty($_POST['email']) || empty($_POST['password'])) $action->redirect('../../login.php');
         $res = $client->clientLogin($_POST['email'], $_POST['password']);
         if (is_array($res)) {
+            $_SESSION['client']['id'] = $res[0]['id'];
             $_SESSION['client']['name'] = $res[0]['name'];
             $_SESSION['client']['email'] = $res[0]['email'];
             $action->redirect('../../client/Index.php');
@@ -40,4 +43,20 @@ if (isset($_POST['login'])) {
     }
 }
 
-// $action->redirect('../../login.php');
+if (isset($_POST['buy'])) {
+    try {
+        if (empty($_POST['id']) || empty($_POST['no'])) $action->flash('Fill input with No. of tickets you\'re purchasing');
+        echo $_SESSION['client']['id']. "</br>";
+        echo  $_POST['id'] . "</br>";
+        echo $_POST['no'] . "</br>";
+        $res = $ticket->buyTicket($_SESSION['client']['id'], $_POST['id'], $_POST['no']);
+        if (is_string($res)) $action->flash($res);
+        if (is_array($res)) $action->flash('Successful ticket bought');
+        $action->redirect('../../client/Index.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
+}
+
+// $action->redirect('../../client/Index.php');

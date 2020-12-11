@@ -6,7 +6,7 @@
  *  Last Modified: Collins <abadaikecollins@gmail.com> <11/09/2020>
  */
 
-include ('./Database.class.php');
+if (isset($databasePath)) require_once ($databasePath);
 
 class Ticket {
     protected $db;
@@ -23,7 +23,7 @@ class Ticket {
    * @param $statusCode 
    * @return Array
    */
-    public function purchaseTicket($clientId,$parkingId, $noOfTickets, $statusCode = 200){
+    public function buyTicket($clientId,$parkingId, $noOfTickets, $statusCode = 200){
         if (!$clientId || !$parkingId || !$noOfTickets) return "Please fill all available inputs";
         try{
             $cTicket = $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkingId, $noOfTickets));

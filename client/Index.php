@@ -28,6 +28,15 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
         </div>
 
         <h3>Parking Space</h3>
+        <?php if (isset($_SESSION['msg'])) { ?>
+            <div class="alert alert-secondary" role="alert">
+                <?php 
+                    echo $_SESSION['msg'];
+                    $action->unsetMsg(); 
+                ?>
+            </div>
+        <?php } ?>
+            
         <table class="table">
             <thead>
                 <tr>
@@ -55,7 +64,13 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                         <?php } else { ?>
                             <td><?= $res['time_available'] ?></td>
                         <?php } ?>
-                        <td><a href="" class="btn btn-primary btn-sm">Buy</a></td>
+                        <td>
+                            <form action="../utilities/handler/formHandler.php" method="post">
+                                <input type="number" name="no" id="no">
+                                <input type="hidden" name="id" value="<?= $res['id'] ?>">
+                                <button type="submit" name="buy" class="btn btn-primary btn-sm">Buy</button>
+                            </form>
+                        </td>
                     </tr>
                 <?php } $int = $int+1; ?>
             </tbody>

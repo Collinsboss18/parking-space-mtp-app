@@ -11,6 +11,10 @@
 
     <div class="container">
         <h1>SignUp</h1>
+        <?php
+            if(isset($_SESSION['msg'])) echo $_SESSION['msg'];
+            $action->unsetMsg(); 
+        ?>
         <form action="./utilities/handler/formHandler.php" method="post">
             <div class="form-group">
                 <label for="name">Name</label>

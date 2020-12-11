@@ -36,6 +36,7 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                 <th scope="col">Price</th>
                 <th scope="col">Available tickets</th>
                 <th scope="col">Availability</th>
+                <th scope="col">Buy Ticket</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,6 +55,7 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                         <?php } else { ?>
                             <td><?= $res['time_available'] ?></td>
                         <?php } ?>
+                        <td><a href="" class="btn btn-primary btn-sm">Buy</a></td>
                     </tr>
                 <?php } $int = $int+1; ?>
             </tbody>

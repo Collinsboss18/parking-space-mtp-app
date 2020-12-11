@@ -6,7 +6,8 @@
  *  Last Modified: Collins <abadaikecollins@gmail.com> <11/09/2020>
  */
 
-include ('./Database.class.php');
+if (isset($databasePath)) require_once ($databasePath);
+if (isset($encryptionPath)) require_once ($encryptionPath);
 
 class Parking {
     protected $db;
@@ -38,9 +39,9 @@ class Parking {
    */
     public function getParkById($id, $statusCode = 200){
         try {
-        $park = $this->db->query('SELECT * FROM `parking` WHERE id = ?', array($id))->fetchArray();
-        if(empty($park)) return 'Cant find park with that id';
-        return $park;
+            $park = $this->db->query('SELECT * FROM `parking` WHERE id = ?', array($id))->fetchArray();
+            if(empty($park)) return 'Cant find park with that id';
+            return $park;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;

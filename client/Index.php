@@ -1,6 +1,11 @@
 <?php
+$databasePath = '../utilities/classes/Database.class.php';
+
 require_once('../utilities/classes/Action.class.php');
+require_once('../utilities/classes/Parking.class.php');
+
 $action = new Action();
+$parking = new Parking();
 if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
 ?>
 
@@ -22,7 +27,8 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
             </p>
         </div>
 
-        <!-- <table class="table">
+        <h3>Parking Space</h3>
+        <table class="table">
             <thead>
                 <tr>
                 <th scope="col">#</th>
@@ -33,14 +39,25 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
+                <?php
+                    $result = $parking->getAllPark();
+                    $int = 1;
+                    foreach($result as $res){
+                ?>
+                    <tr>
+                        <th scope="row"><?= $int ?></th>
+                        <td><?= $res['location'] ?></td>
+                        <td><?= $res['price'] ?></td>
+                        <td><?= $res['available_ticket'] ?></td>
+                        <?php if ($res['always_available'] == true) { ?>
+                            <td><b>Always Available</b></td>
+                        <?php } else { ?>
+                            <td><?= $res['time_available'] ?></td>
+                        <?php } ?>
+                    </tr>
+                <?php } $int = $int+1; ?>
             </tbody>
-        </table> -->
+        </table>
 
     </div>
 

@@ -79,7 +79,8 @@ class Ticket {
             $tickets = array();
             foreach ($result as $ticket) {
                 $park = $this->parking->getParkById($ticket['parking_id']);
-                if (!empty($park) && is_array($park)) array_push($tickets, $park);
+                $parkAndTicketId = array($park, $ticket['id']);
+                if (!empty($park) && is_array($park)) array_push($tickets, $parkAndTicketId);
             }
             return $tickets;
         } catch (Exception $e) {

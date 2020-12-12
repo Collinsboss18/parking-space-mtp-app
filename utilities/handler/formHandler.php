@@ -59,11 +59,10 @@ if (isset($_POST['buy'])) {
 
 if (isset($_POST['reverse'])) {
     try {
-        echo $_POST['id'];
-        // if (empty($_POST['id'])) $action->flash('Invalid Id');
-        // $res = $ticket->reversePurchase($_POST['id']);
-        // if (is_string($res)) $action->flash($res);
-        // $action->redirect('../../client/Index.php');
+        if (empty($_POST['ticketId'])) $action->flash('Invalid ticketId');
+        $res = $ticket->reversePurchase($_POST['ticketId']);
+        if (is_string($res)) $action->flash($res);
+        $action->redirect('../../client/Index.php');
     } catch (Exception $e) {
         // throw new Exception($e->errorMessage());
         return $e;

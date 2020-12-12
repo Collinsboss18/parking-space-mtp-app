@@ -88,22 +88,32 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
         <table class="table">
             <thead>
                 <tr>
-                <th scope="col">#</th>
-                <th scope="col">Location</th>
-                <th scope="col">Price</th>
-                <th scope="col">No of ticket</th>
+                    <th scope="col">#</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">No of ticket</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col">Reverse Purchase</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                     $result = $ticket->getTicketByClientId($_SESSION['client']['id']);
-                    $int = 1;
                     foreach($result as $res){
                 ?>
                 <tr>
                     <th scope="row"><?= $int ?></th>
-                    <td><?= $res['location'] ?></td>
-                    <td><?= $res['price'] ?></td>
+                    <td><?= $res[0]['location'] ?></td>
+                    <td><?= $res[1] ?></td>
+                    <td><?php 
+                        $total = $res[0]['price'] * $res[1];
+                        echo $total;
+                    ?></td>
+                    <td>
+                        <form action="../utilities/handler/formHandler.php" method="post">
+                            <input type="hidden" name="ticketId" value="<?= $res[1] ?>">
+                            <button type="text" name="reverse" class="btn btn-danger btn-sm">Reverse</button>
+                        </form>
+                    </td>
                 </tr>
                 <?php $int++; }  ?>
             </tbody>

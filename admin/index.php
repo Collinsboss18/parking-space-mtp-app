@@ -1,15 +1,16 @@
 <?php
 $databasePath = '../utilities/classes/Database.class.php';
 $encryptionPath = '../utilities/classes/Encryption.class.php';
+$parkingPath = '../utilities/classes/Parking.class.php';
 
-require_once('../utilities/classes/Admin.class.php');
 require_once('../utilities/classes/Action.class.php');
+require_once('../utilities/classes/Admin.class.php');
 require_once('../utilities/classes/Parking.class.php');
 require_once('../utilities/classes/Ticket.class.php');
 
 $action = new Action();
-$action = new Action();
 $parking = new Parking();
+$ticket = new Ticket();
 $admin = new Admin();
 
 if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
@@ -70,7 +71,7 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                         ?></td>
                         <td>
                             <form action="../utilities/handler/formHandler.php" method="post">
-                                <input type="hidden" name="ticketId" value="<?= $res['id'] ?>">
+                                <input type="hidden" name="clientId" value="<?= $res['id'] ?>">
                                 <button type="text" name="tActive" class="btn btn-danger btn-sm">Toggle</button>
                             </form>
                         </td>

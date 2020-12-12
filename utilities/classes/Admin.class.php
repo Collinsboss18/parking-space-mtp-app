@@ -24,8 +24,8 @@ class Admin {
 
    /**
    * This function login an admin
-   * @param $email
-   * @param $password
+   * @param email
+   * @param password
    * @param $statusCode 
    * @return Array
    */
@@ -46,37 +46,59 @@ class Admin {
     }
 
     /**
-     * This function add and removes clients as an admin
-     * @param $id Id of the client
+     * This function that get all clients
+     * @param id Id of the client
      * @param $statusCode 
      * @return Array
    */
-  public function getAllClients($statusCode = 200){
-    try{
-        $res = $this->db->query('SELECT * FROM `clients` WHERE `is_admin`= ?', array(0))->fetchAll();
-        if (is_array($res) && !empty($res)){
-            return $res;
+    public function getAllClients($statusCode = 200){
+        try{
+            $res = $this->db->query('SELECT * FROM `clients` WHERE `is_admin`= ?', array(0))->fetchAll();
+            if (is_array($res) && !empty($res)){
+                return $res;
+            }
+            return "User is not an admin";
+        }catch (Exception $e) {
+            // throw new Exception($e);
+            return $e;
         }
-        return "User is not an admin";
-    }catch (Exception $e) {
-        // throw new Exception($e);
-        return $e;
     }
-}
+    
+    /**
+     * This function that get all clients
+     * @param id Id of the client
+     * @param $statusCode 
+     * @return Array
+   */
+    public function getClientsById($id, $statusCode = 200){
+        try{
+            $res = $this->db->query('SELECT * FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
+            if (is_array($res) && !empty($res)){
+                return $res;
+            }
+            return "Cannot find user with that Id";
+        }catch (Exception $e) {
+            // throw new Exception($e);
+            return $e;
+        }
+    }
 
    /**
    * This function deactivate and activate clients
-   * @param $id Id of the client
+   * @param id Id of the client
    * @param $statusCode 
    * @return Boolean
    */
-    public function toggleActive($id, $statusCode = 200){
+    public function toggleActive($clientId, $statusCode = 200){
         try{
-            $res = $this->db->query('SELECT * FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
-            if ($this->isAdmin($res['is_admin']) == TRUE) {
-                $res['active'] == true ? $active = 0 : $active = 1;
-                $this->db->query("UPDATE `clients` SET `active`= $active WHERE `id` = ?", array($id));
-                return $active;
+            $res = $this->getClientsById($clientId);
+            if ($res['active'] == 1) {
+                $this->db->query("UPDATE `clients` SET `active`= ? WHERE `id` = $clientId", array(0));
+                return FALSE;
+            }
+            if ($res['active'] == 0) {
+                $this->db->query("UPDATE `clients` SET `active`= ? WHERE `id` = $clientId", array(1));
+                return TRUE;
             }
             return "User is not an admin";
         }catch (Exception $e) {
@@ -87,7 +109,7 @@ class Admin {
    
     /**
    * This function add and removes clients as an admin
-   * @param $id Id of the client
+   * @param id Id of the client
    * @param $statusCode 
    * @return Boolean
    */
@@ -108,7 +130,7 @@ class Admin {
    
     /**
    * This function add and removes clients as an admin
-   * @param $id Id of the client
+   * @param id Id of the client
    * @param $statusCode 
    * @return Boolean
    */

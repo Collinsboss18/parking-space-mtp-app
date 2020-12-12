@@ -5,10 +5,12 @@ $encryptionPath = '../classes/Encryption.class.php';
 $parkingPath = '../classes/Parking.class.php';
 
 require_once('../classes/Action.class.php');
+require_once('../classes/Admin.class.php');
 require_once('../classes/Client.class.php');
 require_once('../classes/Ticket.class.php');
 
 $action = new Action();
+$admin = new Admin();
 $client = new Client();
 $ticket = new Ticket();
 
@@ -64,6 +66,16 @@ if (isset($_POST['reverse'])) {
         $res = $ticket->reversePurchase($_POST['ticketId']);
         if (is_string($res)) $action->flash($res);
         $action->redirect('../../client/Index.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
+}
+
+if (isset($_POST['tActive'])) {
+    try {
+        $admin->toggleActive($_POST['clientId']);
+        $action->redirect('../../admin/Index.php');
     } catch (Exception $e) {
         // throw new Exception($e->errorMessage());
         return $e;

@@ -6,30 +6,30 @@
  *  Last Modified: Collins <abadaikecollins@gmail.com> <11/09/2020>
  */
 
-if (isset($databasePath)) require_once ($databasePath);
+// if (isset($databasePath)) require_once ($databasePath);
+// if (isset($parkingPath)) require_once ($parkingPath);
+
+require_once('./Database.class.php');
+require_once('./Parking.class.php');
 
 class Ticket {
     protected $db;
+    protected $parking;
 
     public function __construct() {
 		$this->db = new Database();
+		$this->parking = new Parking();
 	}
-
-   /**
-   * This function gets all parks
-   * @param $clientId 
-   * @param $parkingId 
-   * @param $noOfTickets 
+   
+    /**
+   * This function gets all ticket
    * @param $statusCode 
    * @return Array
    */
-    public function buyTicket($clientId,$parkingId, $noOfTickets, $statusCode = 200){
-        if (!$clientId || !$parkingId || !$noOfTickets) return "Please fill all available inputs";
-        try{
-            $cTicket = $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkingId, $noOfTickets));
-            $insertedId = $cTicket->lastInsertID();
-            return $this->getTicketById($insertedId);
-        }catch (Exception $e) {
+    public function getAllTickets($statusCode = 200){
+        try {
+            return $this->db->query('SELECT * FROM `ticket`')->fetchAll();
+        } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
         }
@@ -51,6 +51,51 @@ class Ticket {
             return $e;
         }
     }
+   
+    /**
+   * This function gets a park by id
+   * @param $id Id of the ticket
+   * @param $statusCode 
+   * @return Array
+   */
+    public function getTicketByParkingId($parkingId, $statusCode = 200){
+        try {
+            return $this->db->query('SELECT * FROM `ticket` WHERE `parking_id` = ?', array($parkingId))->fetchAll();
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+
+    /**
+   * This function gets all parks
+   * @param $clientId 
+   * @param $parkingId 
+   * @param $noOfTickets 
+   * @param $statusCode 
+   * @return Array
+   */
+    public function buyTicket($clientId,$parkingId, $noOfTickets, $statusCode = 200){
+        if (!$clientId || !$parkingId || !$noOfTickets) return "Please fill all available inputs";
+        try{
+            $park = $this->parking->getParkById($parkingId);
+            $tickets = $this->getTicketByParkingId($parkingId);
+            $data =0;
+            if (is_array($tickets)) foreach($tickets as $value){ $data +=$value['tickets']; };
+            if ($park['available_ticket'] >= $data) {
+                
+            }
+            // if ($park['available'] == true) {
+            //     $cTicket = $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkingId, $noOfTickets));
+            //     $insertedId = $cTicket->lastInsertID();
+            //     return $this->getTicketById($insertedId);
+            // }
+            // return "Parking space is currently not available";
+        }catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
 
    /**
    * This function reverses purchase
@@ -68,3 +113,6 @@ class Ticket {
         }
     }
 }
+
+$ticket = new Ticket();
+$ticket->buyTicket(1, 1, 2);

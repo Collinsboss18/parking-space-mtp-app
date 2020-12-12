@@ -2,6 +2,7 @@
 
 $databasePath = '../classes/Database.class.php';
 $encryptionPath = '../classes/Encryption.class.php';
+$parkingPath = '../classes/Parking.class.php';
 
 require_once('../classes/Action.class.php');
 require_once('../classes/Client.class.php');

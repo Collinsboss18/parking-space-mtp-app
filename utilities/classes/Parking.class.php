@@ -52,15 +52,34 @@ class Parking {
    * This function updates a park
    * @param $id Id of the park
    * @param $location
+   * @param $price
+   * @param $available
    * @param $availableTicket
    * @param $alwaysAvailable
    * @param $timeAvailable
    * @return Array
    */
-    public function updatePark($id, $location, $price, $availableTicket, $alwaysAvailable, $timeAvailable, $statusCode = 200){
-        if (!$location || !$timeAvailable || $price || $availableTicket) throw new Exception("Please fill all available inputs");
+    public function updatePark($id, $location, $price, $available, $availableTicket, $alwaysAvailable, $timeAvailable, $statusCode = 200){
+        if (!$location || !$timeAvailable || $price || $availableTicket) return"Please fill all available inputs";
         try{
-            $this->db->query("UPDATE `parking` SET `location`= ?, `price`=?, `available_ticket`=? `always_available`=?, `time_available`=? WHERE `id` = $id", array($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable));
+            $this->db->query("UPDATE `parking` SET `location`= ?, `price`=?, `available`=?, `available_ticket`=? `always_available`=?, `time_available`=? WHERE `id` = $id", array($location, $price, $available, $availableTicket, $alwaysAvailable, $timeAvailable));
+            return $this->getParkById($id);
+        }catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+
+   /**
+   * This function updates a park
+   * @param $id Id of the park
+   * @param $available
+   * @return Array
+   */
+    public function updateAvailability($id, $available, $statusCode = 200){
+        if (!$id || !$available) return "Please fill all available inputs";
+        try{
+            $this->db->query("UPDATE `parking` SET `available`=? WHERE `id` = $id", array($available));
             return $this->getParkById($id);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
@@ -78,7 +97,7 @@ class Parking {
    * @return Array
    */
     public function createPark($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable, $statusCode = 201){
-        if (!$location || !$timeAvailable || $price || $availableTicket) throw new Exception("Please fill all available inputs");
+        if (!$location || !$timeAvailable || $price || $availableTicket) return "Please fill all available inputs";
         try{
             $cPark = $this->db->query('INSERT INTO `parking` (`location`,`price`,`available_ticket`,`always_available`,`time_available`) VALUES (?,?,?,?,?)', array($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable));
             $insertedId = $cPark->lastInsertID();

@@ -64,6 +64,7 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                         <?php } else { ?>
                             <td><?= $res['time_available'] ?></td>
                         <?php } ?>
+                        <?php if ($res['available'] == true) { ?>
                         <td>
                             <form action="../utilities/handler/formHandler.php" method="post">
                                 <input type="number" name="no" id="no">
@@ -71,8 +72,11 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                                 <button type="submit" name="buy" class="btn btn-primary btn-sm">Buy</button>
                             </form>
                         </td>
+                        <?php } else { ?>
+                        <td>Currently not available</td>
+                        <?php } ?>
                     </tr>
-                <?php } $int = $int+1; ?>
+                <?php $int++; }  ?>
             </tbody>
         </table>
 

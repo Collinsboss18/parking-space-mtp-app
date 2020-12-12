@@ -13,7 +13,7 @@ $parking = new Parking();
 $ticket = new Ticket();
 $admin = new Admin();
 
-if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
+if (!isset($_SESSION['admin']['name'])) $action->redirect('../adminLogin.php');
 ?>
 
 <!DOCTYPE html>

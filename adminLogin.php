@@ -26,7 +26,7 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="Password">
             </div>
-            <button type="submit" name="login" class="btn btn-primary">Sign Up</button>
+            <button type="submit" name="aLogin" class="btn btn-primary">Sign Up</button>
         </form>
     </div>
 <?php include_once('./utilities/includes/script.php') ?>

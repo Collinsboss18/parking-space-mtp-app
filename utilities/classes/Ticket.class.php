@@ -36,7 +36,7 @@ class Ticket {
     }
    
     /**
-   * This function gets a park by id
+   * This function gets a ticket by id
    * @param $id Id of the ticket
    * @param $statusCode 
    * @return Array
@@ -53,7 +53,7 @@ class Ticket {
     }
    
    /**
-   * This function gets a park by id
+   * This function gets ticket by a park by id
    * @param $id Id of the ticket
    * @param $statusCode 
    * @return Array
@@ -68,7 +68,7 @@ class Ticket {
     }
    
    /**
-   * This function gets a park by id
+   * This function gets ticket by a park by id
    * @param $id Id of the ticket
    * @param $statusCode 
    * @return Array
@@ -89,7 +89,7 @@ class Ticket {
     }
 
     /**
-   * This function gets all parks
+   * This function buy a ticket
    * @param $clientId 
    * @param $parkingId 
    * @param $noOfTickets 

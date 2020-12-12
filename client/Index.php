@@ -8,6 +8,7 @@ require_once('../utilities/classes/Ticket.class.php');
 $action = new Action();
 $parking = new Parking();
 $ticket = new Ticket();
+
 if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
 ?>
 
@@ -97,6 +98,7 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
             </thead>
             <tbody>
                 <?php
+                    $int = 1;
                     $result = $ticket->getTicketByClientId($_SESSION['client']['id']);
                     foreach($result as $res){
                 ?>

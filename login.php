@@ -7,12 +7,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Packing Space MTP App</title>
+    <title>Packing Space MTP App || Client Login</title>
     <?php include_once('./utilities/includes/style.php') ?>
 </head>
 <body>
     <div class="container">
-        <h1>Login</h1>
+        <h1>Client Login</h1>
         <?php
             if(isset($_SESSION['msg'])) echo $_SESSION['msg'];
             $action->unsetMsg(); 

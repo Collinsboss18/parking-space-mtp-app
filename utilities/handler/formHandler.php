@@ -37,6 +37,7 @@ if (isset($_POST['login'])) {
             $action->redirect('../../client/Index.php');
         };
         $action->flash('Invalid email or password');
+        if (is_string($res)) $action->flash($res);
         $action->redirect('../../login.php');
     } catch (Exception $e) {
         // throw new Exception($e->errorMessage());

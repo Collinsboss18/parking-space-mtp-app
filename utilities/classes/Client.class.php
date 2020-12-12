@@ -32,7 +32,7 @@ class Client {
         if (!$name || !$email || !$password) return "Please fill all available inputs";
         try {
             $newPassword = $this->encrypt->encode($password);
-            $client = $this->db->query('INSERT INTO clients (`name`,`email`,`password`) VALUES (?,?,?)', array($name, $email, $newPassword));
+            $client = $this->db->query('INSERT INTO clients (`name`,`email`,`password`, `active`, `is_admin`) VALUES (?,?,?)', array($name, $email, $newPassword, 1, 0));
             $insertedId = $client->lastInsertID();
             return $this->getClientById($insertedId);
         }catch (Exception $e) {
@@ -55,7 +55,11 @@ class Client {
             if(empty($res)) return 'Invalid email';
             foreach ($res as $client) {
                 $newRes = $this->encrypt->verifyPassword($password, $client['id']);
-                if ($newRes) return $res;
+                if ($newRes) {
+                    $clientActive = $this->db->query('SELECT * FROM `clients` WHERE `email` = ? AND `active` = ? LIMIT 1', array($email, 1))->fetchAll();
+                    if (!empty($clientActive) && is_array($clientActive)) return $res;
+                    return 'Client has been disabled';
+                }
                 return 'Invalid password';
             }
         } catch (Exception $e) {

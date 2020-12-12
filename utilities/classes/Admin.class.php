@@ -6,8 +6,11 @@
  *  Last Modified: Collins <abadaikecollins@gmail.com> <11/09/2020>
  */
 
-include ('./Database.class.php');
-include ('./Encryption.class.php');
+if (isset($databasePath)) require_once ($databasePath);
+if (isset($encryptionPath)) require_once ($encryptionPath);
+
+// include ('./Database.class.php');
+// include ('./Encryption.class.php');
 
 class Admin {
     protected $db;
@@ -46,13 +49,12 @@ class Admin {
      * This function add and removes clients as an admin
      * @param $id Id of the client
      * @param $statusCode 
-     * @return Boolean
+     * @return Array
    */
-  public function getAllClients($id, $statusCode = 200){
+  public function getAllClients($statusCode = 200){
     try{
-        $res = $this->db->query('SELECT * FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
-        if ($this->isAdmin($res['is_admin']) == TRUE) {
-            $res =  $this->db->query('SELECT * FROM `clients` WHERE <> `id`=?', array($id))->fetchAll();
+        $res = $this->db->query('SELECT * FROM `clients` WHERE `is_admin`= ?', array(0))->fetchAll();
+        if (is_array($res) && !empty($res)){
             return $res;
         }
         return "User is not an admin";
@@ -120,3 +122,6 @@ class Admin {
         }
     }
 }
+
+// $admin = new Admin();
+// $admin->getAllClients();

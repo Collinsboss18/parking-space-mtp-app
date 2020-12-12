@@ -47,13 +47,23 @@ if (isset($_POST['login'])) {
 if (isset($_POST['buy'])) {
     try {
         if (empty($_POST['id']) || empty($_POST['no'])) $action->flash('Fill input with No. of tickets you\'re purchasing');
-        echo $_SESSION['client']['id']. "</br>";
-        echo  $_POST['id'] . "</br>";
-        echo $_POST['no'] . "</br>";
         $res = $ticket->buyTicket($_SESSION['client']['id'], $_POST['id'], $_POST['no']);
         if (is_string($res)) $action->flash($res);
         if (is_array($res)) $action->flash('Successful ticket bought');
         $action->redirect('../../client/Index.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
+}
+
+if (isset($_POST['reverse'])) {
+    try {
+        echo $_POST['id'];
+        // if (empty($_POST['id'])) $action->flash('Invalid Id');
+        // $res = $ticket->reversePurchase($_POST['id']);
+        // if (is_string($res)) $action->flash($res);
+        // $action->redirect('../../client/Index.php');
     } catch (Exception $e) {
         // throw new Exception($e->errorMessage());
         return $e;

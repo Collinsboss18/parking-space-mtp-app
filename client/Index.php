@@ -3,9 +3,11 @@ $databasePath = '../utilities/classes/Database.class.php';
 
 require_once('../utilities/classes/Action.class.php');
 require_once('../utilities/classes/Parking.class.php');
+require_once('../utilities/classes/Ticket.class.php');
 
 $action = new Action();
 $parking = new Parking();
+$ticket = new Ticket();
 if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
 ?>
 
@@ -27,7 +29,7 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
             </p>
         </div>
 
-        <h3>Parking Space</h3>
+        <br>
         <?php if (isset($_SESSION['msg'])) { ?>
             <div class="alert alert-secondary" role="alert">
                 <?php 
@@ -36,7 +38,9 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                 ?>
             </div>
         <?php } ?>
-            
+        <br>
+
+        <h3>Parking Space</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -76,6 +80,31 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                         <td>Currently not available</td>
                         <?php } ?>
                     </tr>
+                <?php $int++; }  ?>
+            </tbody>
+        </table>
+
+        <h3>My Tickets</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Location</th>
+                <th scope="col">Price</th>
+                <th scope="col">No of ticket</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    $result = $ticket->getTicketByClientId($_SESSION['client']['id']);
+                    $int = 1;
+                    foreach($result as $res){
+                ?>
+                <tr>
+                    <th scope="row"><?= $int ?></th>
+                    <td><?= $res['location'] ?></td>
+                    <td><?= $res['price'] ?></td>
+                </tr>
                 <?php $int++; }  ?>
             </tbody>
         </table>

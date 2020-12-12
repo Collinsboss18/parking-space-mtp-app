@@ -52,7 +52,7 @@ class Ticket {
         }
     }
    
-    /**
+   /**
    * This function gets a park by id
    * @param $id Id of the ticket
    * @param $statusCode 
@@ -61,6 +61,27 @@ class Ticket {
     public function getTicketByParkingId($parkingId, $statusCode = 200){
         try {
             return $this->db->query('SELECT * FROM `ticket` WHERE `parking_id` = ?', array($parkingId))->fetchAll();
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+   
+   /**
+   * This function gets a park by id
+   * @param $id Id of the ticket
+   * @param $statusCode 
+   * @return Array
+   */
+    public function getTicketByClientId($clientId, $statusCode = 200){
+        try {
+            $result = $this->db->query('SELECT * FROM `ticket` WHERE `client_id` = ?', array($clientId))->fetchAll();
+            $tickets = array();
+            foreach ($result as $ticket) {
+                $park = $this->parking->getParkById($ticket['parking_id']);
+                if (!empty($park) && is_array($park)) array_push($tickets, $park);
+            }
+            return $tickets;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -81,7 +102,7 @@ class Ticket {
             $park = $this->parking->getParkById($parkingId);
             $tickets = $this->getTicketByParkingId($parkingId);
             $data = 0;
-            if (is_array($tickets)) foreach($tickets as $value){ $data +=$value['tickets']; };
+            if (is_array($tickets)) foreach($tickets as $ticket){ $data +=$ticket['tickets']; };
             /** Check if parking space is available */
             if ($data >= $park['available_ticket']) {
                 // Update parking availability
@@ -118,4 +139,4 @@ class Ticket {
 }
 
 // $ticket = new Ticket();
-// $ticket->buyTicket(1, 1, 2);
+// $ticket->getTicketByClientId(1);

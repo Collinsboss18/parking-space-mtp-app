@@ -6,11 +6,11 @@
  *  Last Modified: Collins <abadaikecollins@gmail.com> <11/09/2020>
  */
 
-// if (isset($databasePath)) require_once ($databasePath);
-// if (isset($parkingPath)) require_once ($parkingPath);
+if (isset($databasePath)) require_once ($databasePath);
+if (isset($parkingPath)) require_once ($parkingPath);
 
-require_once('./Database.class.php');
-require_once('./Parking.class.php');
+// require_once('./Database.class.php');
+// require_once('./Parking.class.php');
 
 class Ticket {
     protected $db;
@@ -80,17 +80,20 @@ class Ticket {
         try{
             $park = $this->parking->getParkById($parkingId);
             $tickets = $this->getTicketByParkingId($parkingId);
-            $data =0;
+            $data = 0;
             if (is_array($tickets)) foreach($tickets as $value){ $data +=$value['tickets']; };
-            if ($park['available_ticket'] >= $data) {
-                
+            /** Check if parking space is available */
+            if ($data >= $park['available_ticket']) {
+                // Update parking availability
+                $this->parking->updateAvailability($parkingId, 0);
+                return 'Ticket not available';
+            };
+            if ($park['available'] == true) {
+                $cTicket = $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkingId, $noOfTickets));
+                $insertedId = $cTicket->lastInsertID();
+                return $this->getTicketById($insertedId);
             }
-            // if ($park['available'] == true) {
-            //     $cTicket = $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkingId, $noOfTickets));
-            //     $insertedId = $cTicket->lastInsertID();
-            //     return $this->getTicketById($insertedId);
-            // }
-            // return "Parking space is currently not available";
+            return "Parking space is currently not available";
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -114,5 +117,5 @@ class Ticket {
     }
 }
 
-$ticket = new Ticket();
-$ticket->buyTicket(1, 1, 2);
+// $ticket = new Ticket();
+// $ticket->buyTicket(1, 1, 2);

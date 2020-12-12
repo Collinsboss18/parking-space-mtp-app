@@ -9,6 +9,9 @@
 if (isset($databasePath)) require_once ($databasePath);
 if (isset($encryptionPath)) require_once ($encryptionPath);
 
+// require_once('./Database.class.php');
+// require_once('./Encryption.class.php');
+
 class Parking {
     protected $db;
 
@@ -60,7 +63,7 @@ class Parking {
    * @return Array
    */
     public function updatePark($id, $location, $price, $available, $availableTicket, $alwaysAvailable, $timeAvailable, $statusCode = 200){
-        if (!$location || !$timeAvailable || $price || $availableTicket) return"Please fill all available inputs";
+        if (!$location || !$timeAvailable || $price || $availableTicket) return"Please fill required data";
         try{
             $this->db->query("UPDATE `parking` SET `location`= ?, `price`=?, `available`=?, `available_ticket`=? `always_available`=?, `time_available`=? WHERE `id` = $id", array($location, $price, $available, $availableTicket, $alwaysAvailable, $timeAvailable));
             return $this->getParkById($id);
@@ -77,9 +80,8 @@ class Parking {
    * @return Array
    */
     public function updateAvailability($id, $available, $statusCode = 200){
-        if (!$id || !$available) return "Please fill all available inputs";
         try{
-            $this->db->query("UPDATE `parking` SET `available`=? WHERE `id` = $id", array($available));
+            $this->db->query("UPDATE `parking` SET `available` = ? WHERE `parking`.`id` = $id", array($available));
             return $this->getParkById($id);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
@@ -97,7 +99,7 @@ class Parking {
    * @return Array
    */
     public function createPark($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable, $statusCode = 201){
-        if (!$location || !$timeAvailable || $price || $availableTicket) return "Please fill all available inputs";
+        if (!$location || !$timeAvailable || $price || $availableTicket) return "Please fill required data";
         try{
             $cPark = $this->db->query('INSERT INTO `parking` (`location`,`price`,`available_ticket`,`always_available`,`time_available`) VALUES (?,?,?,?,?)', array($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable));
             $insertedId = $cPark->lastInsertID();
@@ -114,7 +116,7 @@ class Parking {
    * @return String
    */
     public function deletePark($id, $statusCode = 200){
-        if (!$id) return "Please fill all available inputs";
+        if (!$id) return "Please fill required data";
         try{
             $this->db->query('DELETE FROM `parking` WHERE `id`=?', array($id));
             return ["msg"=>"Successfully deleted park"];

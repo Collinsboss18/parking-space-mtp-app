@@ -43,8 +43,8 @@ CREATE TABLE `clients` (
 --
 
 INSERT INTO `clients` (`id`, `name`, `active`, `is_admin`, `password`, `email`, `created_at`, `updated_at`) VALUES
-(1, 'Collins', 1, 1, '$2y$10$R64FzmmudDkCPLnHGRAstO4S5/xi58QoKmjrg4bgV4fN39Rwacdau', 'cmanmmo18@gmail.com', '0000-00-00 00:00:00', '2020-12-11 19:28:36'),
-(2, 'Wilson', 1, 0, '$2y$10$SQV6xtwgzP4N7Js2UAQ22enLiTUw499Uz4jPJd11CBfU3p.Rql/qm', 'wilson@gmail.com', '0000-00-00 00:00:00', '2020-12-11 20:48:52');
+(1, 'Admin', 1, 1, '$2y$10$R64FzmmudDkCPLnHGRAstO4S5/xi58QoKmjrg4bgV4fN39Rwacdau', 'admin@gmail.com', '0000-00-00 00:00:00', '2020-12-11 19:28:36'),
+(2, 'Client', 1, 0, '$2y$10$SQV6xtwgzP4N7Js2UAQ22enLiTUw499Uz4jPJd11CBfU3p.Rql/qm', 'client@gmail.com', '0000-00-00 00:00:00', '2020-12-11 20:48:52');
 
 -- --------------------------------------------------------
 

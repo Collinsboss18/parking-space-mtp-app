@@ -51,6 +51,29 @@ class Parking {
         }
     }
 
+    /**
+   * This function gets a park by id
+   * @param $id Id of the park
+   * @param $statusCode 
+   * @return Array
+   */
+    public function getAllUserPark($id, $statusCode = 200){
+        try {
+            $tickets = $this->db->query('SELECT `parking_id`, `tickets` FROM `ticket` WHERE `client_id` = ?', array($id))->fetchAll();
+            $parks = array();
+            foreach ($tickets as $ticket){
+                $park =  $this->db->query('SELECT * FROM `parking` WHERE `id` = ?', array($ticket['parking_id']))->fetchAll();
+                $res = array($park, $ticket['tickets']);
+                array_push($parks, $res);
+            }
+            if(empty($parks)) return 'Cant find park with that id';
+            return $parks;
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+
    /**
    * This function updates a park
    * @param $id Id of the park
@@ -126,3 +149,6 @@ class Parking {
         }
     }
 }
+
+$parking = new Parking();
+$parking->getAllUserPark(1);

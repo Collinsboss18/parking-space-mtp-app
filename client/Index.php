@@ -9,7 +9,7 @@ $action = new Action();
 $parking = new Parking();
 $ticket = new Ticket();
 
-if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
+if (!isset($_SESSION['client'])) $action->redirect('../login.php');
 ?>
 
 <!DOCTYPE html>
@@ -41,16 +41,20 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
         <?php } ?>
         <br>
 
-        <h3>Parking Space</h3>
+        <h1>Tickets: <?php 
+            $noTicket = $ticket->getUserTicket($_SESSION['client']['id']); 
+            echo $noTicket['tickets'];
+        ?></h1>
+
+        <h3>Available Parking Space</h3>
         <table class="table">
             <thead>
                 <tr>
                 <th scope="col">#</th>
                 <th scope="col">Location</th>
-                <th scope="col">Price</th>
-                <th scope="col">Available tickets</th>
-                <th scope="col">Availability</th>
-                <th scope="col">Buy Ticket</th>
+                <th scope="col">Available Spot</th>
+                <th scope="col">Time Available</th>
+                <th scope="col">Book With Ticket</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,8 +66,7 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                     <tr>
                         <th scope="row"><?= $int ?></th>
                         <td><?= $res['location'] ?></td>
-                        <td><?= $res['price'] ?></td>
-                        <td><?= $res['available_ticket'] ?></td>
+                        <td><?= $res['available_spot'] ?></td>
                         <?php if ($res['always_available'] == true) { ?>
                             <td><b>Always Available</b></td>
                         <?php } else { ?>
@@ -74,7 +77,7 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
                             <form action="../utilities/handler/formHandler.php" method="post">
                                 <input type="number" name="no" id="no">
                                 <input type="hidden" name="id" value="<?= $res['id'] ?>">
-                                <button type="submit" name="buy" class="btn btn-primary btn-sm">Buy</button>
+                                <button type="submit" name="book" class="btn btn-primary btn-sm">Book</button>
                             </form>
                         </td>
                         <?php } else { ?>
@@ -85,38 +88,40 @@ if (!isset($_SESSION['client']['name'])) $action->redirect('../login.php');
             </tbody>
         </table>
 
-        <h3>My Tickets</h3>
+        <h3>Booked Parking Space</h3>
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">No of ticket</th>
-                    <th scope="col">Total Price</th>
-                    <th scope="col">Reverse Purchase</th>
+                <th scope="col">#</th>
+                <th scope="col">Location</th>
+                <th scope="col">No Of Ticket</th>
+                <th scope="col">Time Available</th>
+                <th scope="col">Reverse Spot</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
+                    $result = $parking->getAllUserPark($_SESSION['client']['id']);
                     $int = 1;
-                    $result = $ticket->getTicketByClientId($_SESSION['client']['id']);
                     foreach($result as $res){
                 ?>
-                <tr>
-                    <th scope="row"><?= $int ?></th>
-                    <td><?= $res[0]['location'] ?></td>
-                    <td><?= $res[1] ?></td>
-                    <td><?php 
-                        $total = $res[0]['price'] * $res[1];
-                        echo $total;
-                    ?></td>
-                    <td>
-                        <form action="../utilities/handler/formHandler.php" method="post">
-                            <input type="hidden" name="ticketId" value="<?= $res[1] ?>">
-                            <button type="text" name="reverse" class="btn btn-danger btn-sm">Reverse</button>
-                        </form>
-                    </td>
-                </tr>
+                    <tr>
+                        <th scope="row"><?= $int ?></th>
+                        <td><?= $res[0][0]['location'] ?></td>
+                        <td><?= $res[1] ?></td>
+                        <?php if ($res[0][0]['always_available'] == true) { ?>
+                            <td><b>Always Available</b></td>
+                        <?php } else { ?>
+                            <td><?= $res[0][0]['time_available'] ?></td>
+                        <?php } ?>
+                        <td>
+                            <form action="../utilities/handler/formHandler.php" method="post">
+                                <input type="hidden" name="id" value="<?= $res[0][0]['id'] ?>">
+                                <input type="hidden" name="noTicket" value="<?= $noTicket['tickets'] ?>">
+                                <button type="submit" name="reverse" class="btn btn-primary btn-sm">Reverse</button>
+                            </form>
+                        </td>
+                    </tr>
                 <?php $int++; }  ?>
             </tbody>
         </table>

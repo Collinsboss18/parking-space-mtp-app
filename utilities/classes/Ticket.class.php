@@ -35,6 +35,21 @@ class Ticket {
         }
     }
    
+   
+    /**
+   * This function gets user ticket
+   * @param $statusCode 
+   * @return Array
+   */
+    public function getUserTicket($userId, $statusCode = 200){
+        try {
+            return $this->db->query('SELECT `tickets` FROM `ticket` WHERE `id`=? LIMIT 1', array($userId))->fetchArray();
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+   
     /**
    * This function gets a ticket by id
    * @param $id Id of the ticket

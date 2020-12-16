@@ -14,7 +14,7 @@ class Database {
 	public $query_count = 0;
 
 	/** Construct __construct */
-	public function __construct($dbhost = 'localhost', $dbuser = 'root', $dbpass = '', $dbname = 'parking_app', $charset = 'utf8') {
+	public function __construct($dbhost = '127.0.0.1', $dbuser = 'root', $dbpass = '', $dbname = 'parking_app', $charset = 'utf8') {
 		$this->connection = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 		if ($this->connection->connect_error) {
 			$this->error('Failed to connect Database - ' . $this->connection->connect_error);

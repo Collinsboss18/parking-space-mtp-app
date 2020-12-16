@@ -1,13 +1,17 @@
 <?php
 $databasePath = '../utilities/classes/Database.class.php';
+$encryptionPath = '../utilities/classes/Encryption.class.php';
+$clientPath = '../utilities/classes/Client.class.php';
 
 require_once('../utilities/classes/Action.class.php');
 require_once('../utilities/classes/Parking.class.php');
 require_once('../utilities/classes/Ticket.class.php');
+require_once('../utilities/classes/Client.class.php');
 
 $action = new Action();
 $parking = new Parking();
 $ticket = new Ticket();
+$client = new Client();
 
 if (!isset($_SESSION['client'])) $action->redirect('../login.php');
 ?>
@@ -42,7 +46,7 @@ if (!isset($_SESSION['client'])) $action->redirect('../login.php');
         <br>
 
         <h1>Tickets: <?php 
-            $noTicket = $ticket->getUserTicket($_SESSION['client']['id']); 
+            $noTicket = $client->getUserTicket($_SESSION['client']['id']); 
             echo $noTicket['tickets'];
         ?></h1>
 
@@ -75,8 +79,8 @@ if (!isset($_SESSION['client'])) $action->redirect('../login.php');
                         <?php if ($res['available'] == true) { ?>
                         <td>
                             <form action="../utilities/handler/formHandler.php" method="post">
-                                <input type="number" name="no" id="no">
-                                <input type="hidden" name="id" value="<?= $res['id'] ?>">
+                                <input type="number" name="noTicket" id="no">
+                                <input type="hidden" name="parkId" value="<?= $res['id'] ?>">
                                 <button type="submit" name="book" class="btn btn-primary btn-sm">Book</button>
                             </form>
                         </td>
@@ -101,7 +105,7 @@ if (!isset($_SESSION['client'])) $action->redirect('../login.php');
             </thead>
             <tbody>
                 <?php
-                    $result = $parking->getAllUserPark($_SESSION['client']['id']);
+                    $result = $parking->getAllClientPark($_SESSION['client']['id']);
                     $int = 1;
                     foreach($result as $res){
                 ?>

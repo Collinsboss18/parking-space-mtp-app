@@ -7,17 +7,21 @@
  */
 
 if (isset($databasePath)) require_once ($databasePath);
+if (isset($clientPath)) require_once ($clientPath);
 if (isset($parkingPath)) require_once ($parkingPath);
 
 // require_once('./Database.class.php');
+// require_once('./Client.class.php');
 // require_once('./Parking.class.php');
 
 class Ticket {
     protected $db;
     protected $parking;
+    protected $client;
 
     public function __construct() {
-		$this->db = new Database();
+        $this->db = new Database();
+        $this->client = new Client();
 		$this->parking = new Parking();
 	}
    
@@ -137,6 +141,27 @@ class Ticket {
         }
     }
 
+    /**
+   * This function reverses purchase
+   * @param Tickets Id of the park
+   * @param ParkId Id of the park
+   * @param ClientId Login user id
+   * @return Array
+   */
+    public function bookParking($tickets, $parkId, $clientId, $statusCode = 200){
+        if (empty($tickets) || empty($parkId) || empty($clientId)) return "Please fill function required data";
+        try{
+            $cTicket = $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkId, $tickets));
+            $insertedId = $cTicket->lastInsertID();
+            $res = $this->client->updateTicket($clientId, $tickets);
+            if (is_array($res)) return $this->getTicketById($insertedId);
+            return "Process failed please try again later";
+        }catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+
    /**
    * This function reverses purchase
    * @param $id Id of the ticket
@@ -153,6 +178,3 @@ class Ticket {
         }
     }
 }
-
-// $ticket = new Ticket();
-// $ticket->getTicketByClientId(1);

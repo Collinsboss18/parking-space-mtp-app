@@ -10,6 +10,9 @@
 if (isset($databasePath)) require_once ($databasePath);
 if (isset($encryptionPath)) require_once ($encryptionPath);
 
+// require_once('./Database.class.php');
+// require_once('./Encryption.class.php');
+
 class Client {
     protected $db;
     protected $encrypt;
@@ -70,13 +73,13 @@ class Client {
 
    /**
    * This function gets a client by id
-   * @param $id Id of the client
+   * @param $clientId Id of the client
    * @param $statusCode 
    * @return Array
    */
-    public function getClientById($id, $statusCode = 200){
+    public function getClientById($clientId, $statusCode = 200){
         try {
-            $client = $this->db->query('SELECT * FROM `clients` WHERE id = ?', array($id))->fetchArray();
+            $client = $this->db->query('SELECT * FROM `clients` WHERE id = ?', array($clientId))->fetchArray();
             if(empty($client)) return 'Cannot find client with that id';
             return $client;
         } catch (Exception $e) {
@@ -84,4 +87,41 @@ class Client {
             return $e;
         }
     }
+
+   /**
+   * This function gets a client by id
+   * @param $clientId Id of the client
+   * @param $statusCode 
+   * @return Array
+   */
+    public function getUserTicket($clientId, $statusCode = 200){
+        try {
+            return $this->db->query('SELECT `tickets` FROM `clients` WHERE id = ?', array($clientId))->fetchArray();
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+
+    /**
+   * This function gets a client by id
+   * @param $clientId Id of the client
+   * @param $statusCode 
+   * @return Array
+   */
+    public function updateTicket($clientId, $tickets, $statusCode = 200){
+        try {
+            $client = $this->getClientById($clientId);
+            if (($client['tickets'] - $tickets) < 0) return "You don't have enough tickets";
+            $newTicket = $client['tickets'] - $tickets;
+            $this->db->query("UPDATE `clients` SET `tickets` = ? WHERE `clients`.`id` = $clientId", array($newTicket));
+            return $client;
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
 }
+
+// $client = new Client();
+// $client->updateTicket(2, 1);

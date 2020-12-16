@@ -57,7 +57,7 @@ class Parking {
    * @param $statusCode 
    * @return Array
    */
-    public function getAllUserPark($id, $statusCode = 200){
+    public function getAllClientPark($id, $statusCode = 200){
         try {
             $tickets = $this->db->query('SELECT `parking_id`, `tickets` FROM `ticket` WHERE `client_id` = ?', array($id))->fetchAll();
             $parks = array();
@@ -66,7 +66,7 @@ class Parking {
                 $res = array($park, $ticket['tickets']);
                 array_push($parks, $res);
             }
-            if(empty($parks)) return 'Cant find park with that id';
+            if(empty($parks)) return 'Book a park';
             return $parks;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
@@ -150,5 +150,5 @@ class Parking {
     }
 }
 
-$parking = new Parking();
-$parking->getAllUserPark(1);
+// $parking = new Parking();
+// $parking->getAllUserPark(1);

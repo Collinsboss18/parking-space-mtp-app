@@ -3,6 +3,7 @@
 $databasePath = '../classes/Database.class.php';
 $encryptionPath = '../classes/Encryption.class.php';
 $parkingPath = '../classes/Parking.class.php';
+$clientPath = '../classes/Client.class.php';
 
 require_once('../classes/Action.class.php');
 require_once('../classes/Admin.class.php');
@@ -67,12 +68,12 @@ if (isset($_POST['aLogin'])) {
     }
 }
 
-if (isset($_POST['buy'])) {
+if (isset($_POST['book'])) {
     try {
-        if (empty($_POST['id']) || empty($_POST['no'])) $action->flash('Fill input with No. of tickets you\'re purchasing');
-        $res = $ticket->buyTicket($_SESSION['client']['id'], $_POST['id'], $_POST['no']);
+        if (empty($_POST['parkId']) || empty($_POST['noTicket'])) $action->flash('Fill input with No. of tickets you\'re purchasing');
+        $res = $ticket->bookParking($_POST['noTicket'], $_POST['parkId'], $_SESSION['client']['id']);
         if (is_string($res)) $action->flash($res);
-        if (is_array($res)) $action->flash('Successful ticket bought');
+        if (is_array($res)) $action->flash('Successful parking space booked');
         $action->redirect('../../client/Index.php');
     } catch (Exception $e) {
         // throw new Exception($e->errorMessage());

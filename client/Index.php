@@ -100,7 +100,7 @@ if (!isset($_SESSION['client'])) $action->redirect('../login.php');
                 <th scope="col">Location</th>
                 <th scope="col">No Of Ticket</th>
                 <th scope="col">Time Available</th>
-                <th scope="col">Reverse Spot</th>
+                <th scope="col">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -118,18 +118,15 @@ if (!isset($_SESSION['client'])) $action->redirect('../login.php');
                         <?php } else { ?>
                             <td><?= $res[0][0]['time_available'] ?></td>
                         <?php } ?>
-                        <td>
-                            <form action="../utilities/handler/formHandler.php" method="post">
-                                <input type="hidden" name="id" value="<?= $res[0][0]['id'] ?>">
-                                <input type="hidden" name="noTicket" value="<?= $noTicket['tickets'] ?>">
-                                <button type="submit" name="reverse" class="btn btn-primary btn-sm">Reverse</button>
-                            </form>
-                        </td>
+                        <td><?php if ($res[2] >= 1) {
+                            echo 'Ticket Available';
+                        } else {
+                            echo 'Ticket Used';
+                        } ?></td>
                     </tr>
                 <?php $int++; }  ?>
             </tbody>
         </table>
-
     </div>
 
 <?php include_once('../utilities/includes/script.php') ?>

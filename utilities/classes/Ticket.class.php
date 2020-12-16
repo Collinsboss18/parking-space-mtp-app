@@ -143,19 +143,21 @@ class Ticket {
 
     /**
    * This function reverses purchase
-   * @param Tickets Id of the park
-   * @param ParkId Id of the park
-   * @param ClientId Login user id
+   * @param tickets Id of the park
+   * @param parkId Id of the park
+   * @param clientId Login user id
    * @return Array
    */
     public function bookParking($tickets, $parkId, $clientId, $statusCode = 200){
         if (empty($tickets) || empty($parkId) || empty($clientId)) return "Please fill function required data";
         try{
-            $cTicket = $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkId, $tickets));
-            $insertedId = $cTicket->lastInsertID();
-            $res = $this->client->updateTicket($clientId, $tickets);
-            if (is_array($res)) return $this->getTicketById($insertedId);
-            return "Process failed please try again later";
+            $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkId, $tickets));
+            $res = $this->client->updateClientTicket($clientId, $tickets);
+            $res1 = $this->parking->updateParkingSpot($parkId, $tickets);
+            if (is_string($res)) return $res;
+            if (is_string($res1)) return $res1;
+            if (is_array($res) && is_array($res1)) return $res1;
+            return "Process failed please try again";
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;

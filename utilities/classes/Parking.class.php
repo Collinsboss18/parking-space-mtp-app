@@ -59,12 +59,15 @@ class Parking {
    */
     public function getAllClientPark($id, $statusCode = 200){
         try {
-            $tickets = $this->db->query('SELECT `parking_id`, `tickets` FROM `ticket` WHERE `client_id` = ?', array($id))->fetchAll();
+            $tickets = $this->db->query('SELECT `parking_id`, `tickets`, `status` FROM `ticket` WHERE `client_id` = ?', array($id))->fetchAll();
             $parks = array();
             foreach ($tickets as $ticket){
                 $park =  $this->db->query('SELECT * FROM `parking` WHERE `id` = ?', array($ticket['parking_id']))->fetchAll();
-                $res = array($park, $ticket['tickets']);
-                array_push($parks, $res);
+                $res = array();
+                $res[] = $park;
+                $res[] = $ticket['tickets'];
+                $res[] = $ticket['status'];
+                $parks[] = $res;
             }
             if(empty($parks)) return 'Book a park';
             return $parks;
@@ -142,7 +145,27 @@ class Parking {
         if (!$id) return "Please fill required data";
         try{
             $this->db->query('DELETE FROM `parking` WHERE `id`=?', array($id));
-            return ["msg"=>"Successfully deleted park"];
+            return "Successfully deleted park";
+        }catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+
+    /**
+   * This function to update number of parking spot
+   * @param parkId Id of the park that is to be updated
+   * @param tickets number of tickets
+   * @return Array
+   */
+    public function updateParkingSpot($parkId, $tickets, $statusCode = 200){
+        if (empty($parkId) || empty($tickets)) return "Please fill all required function params";
+        try{
+            $park = $this->getParkById($parkId);
+            if ($park['available_spot'] <= 0) return "All spots are already booked";
+            $noSpot = $park['available_spot'] - $tickets;
+            $this->db->query("UPDATE `parking` SET `available_spot` = ? WHERE `parking`.`id` = $parkId", array($noSpot));
+            return $park;
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;

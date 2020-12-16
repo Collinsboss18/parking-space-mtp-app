@@ -109,7 +109,7 @@ class Client {
    * @param $statusCode 
    * @return Array
    */
-    public function updateTicket($clientId, $tickets, $statusCode = 200){
+    public function updateClientTicket($clientId, $tickets, $statusCode = 200){
         try {
             $client = $this->getClientById($clientId);
             if (($client['tickets'] - $tickets) < 0) return "You don't have enough tickets";

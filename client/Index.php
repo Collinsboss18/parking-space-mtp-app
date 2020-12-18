@@ -77,7 +77,8 @@ if (!isset($_SESSION['client'])) $action->redirect('../login.php');
                         ?></td>
                         <td><?= $res['space_no'] ?></td>
                         <td><?php
-                            echo $res['date_available'];
+                            $dateTime = strtotime($res['date_available']);
+                            echo date('y-F-Y h:i:s', $dateTime);
                         ?></td>
                         <td>
                             <?php if ($res['status'] === 0) { ?>

@@ -31,11 +31,11 @@ class Client {
    * @param $statusCode 
    * @return Array
    */
-    public function clientSignUp(String $name, $email, $password, $statusCode = 201){
-        if (!$name || !$email || !$password) return "Please fill all available inputs";
+    public function clientSignUp($name, $email, $password, $statusCode = 201){
+        if (!$email || !$password) return "Please fill required all method params";
         try {
             $newPassword = $this->encrypt->encode($password);
-            $client = $this->db->query('INSERT INTO clients (`name`,`email`,`password`, `active`, `is_admin`) VALUES (?,?,?)', array($name, $email, $newPassword, 1, 0));
+            $client = $this->db->query('INSERT INTO `user` (`name`, `email`,`password`, `is_active`, `role`, `no_ticket`) VALUES (?,?,?,?,?,?)', array($name, $email, $newPassword, 1, 0, 0));
             $insertedId = $client->lastInsertID();
             return $this->getClientById($insertedId);
         }catch (Exception $e) {
@@ -52,14 +52,14 @@ class Client {
    * @return Array
    */
     public function clientLogin($email, $password, $statusCode = 200){
-        if (!$email || !$password) return 'Fill all available input';
+        if (!$email || !$password) return 'Fill all required method params';
         try {
-            $res = $this->db->query('SELECT * FROM `clients` WHERE `email` = ? LIMIT 1', array($email))->fetchAll();
+            $res = $this->db->query('SELECT * FROM `user` WHERE `email` = ? LIMIT 1', array($email))->fetchAll();
             if(empty($res)) return 'Invalid email';
             foreach ($res as $client) {
                 $newRes = $this->encrypt->verifyPassword($password, $client['id']);
                 if ($newRes) {
-                    $clientActive = $this->db->query('SELECT * FROM `clients` WHERE `email` = ? AND `active` = ? LIMIT 1', array($email, 1))->fetchAll();
+                    $clientActive = $this->db->query('SELECT * FROM `user` WHERE `email` = ? AND `is_active` = ? LIMIT 1', array($email, 1))->fetchAll();
                     if (!empty($clientActive) && is_array($clientActive)) return $res;
                     return 'Client has been disabled';
                 }
@@ -79,7 +79,7 @@ class Client {
    */
     public function getClientById($clientId, $statusCode = 200){
         try {
-            $client = $this->db->query('SELECT * FROM `clients` WHERE id = ?', array($clientId))->fetchArray();
+            $client = $this->db->query('SELECT * FROM `user` WHERE id = ?', array($clientId))->fetchArray();
             if(empty($client)) return 'Cannot find client with that id';
             return $client;
         } catch (Exception $e) {
@@ -96,7 +96,8 @@ class Client {
    */
     public function getUserTicket($clientId, $statusCode = 200){
         try {
-            return $this->db->query('SELECT `tickets` FROM `clients` WHERE id = ?', array($clientId))->fetchArray();
+            $res =  $this->db->query('SELECT `no_ticket` FROM `user` WHERE id = ?', array($clientId))->fetchArray();
+            return $res['no_ticket'];
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -109,12 +110,11 @@ class Client {
    * @param $statusCode 
    * @return Array
    */
-    public function updateClientTicket($clientId, $tickets, $statusCode = 200){
+    public function updateClientTicket($clientId, $statusCode = 200){
         try {
             $client = $this->getClientById($clientId);
-            if (($client['tickets'] - $tickets) < 0) return "You don't have enough tickets";
-            $newTicket = $client['tickets'] - $tickets;
-            $this->db->query("UPDATE `clients` SET `tickets` = ? WHERE `clients`.`id` = $clientId", array($newTicket));
+            $newTicket = $client['no_ticket'] - 1;
+            $this->db->query("UPDATE `user` SET `no_ticket` = ? WHERE `user`.`id` = $clientId", array($newTicket));
             return $client;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
@@ -124,4 +124,4 @@ class Client {
 }
 
 // $client = new Client();
-// $client->updateTicket(2, 1);
+// $client->updateClientTicket(1);

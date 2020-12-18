@@ -1,15 +1,13 @@
 <?php
 $databasePath = '../utilities/classes/Database.class.php';
 $encryptionPath = '../utilities/classes/Encryption.class.php';
-$parkingPath = '../utilities/classes/Parking.class.php';
+$clientPath = '../utilities/classes/Client.class.php';
 
 require_once('../utilities/classes/Action.class.php');
 require_once('../utilities/classes/Admin.class.php');
-require_once('../utilities/classes/Parking.class.php');
 require_once('../utilities/classes/Ticket.class.php');
 
 $action = new Action();
-$parking = new Parking();
 $ticket = new Ticket();
 $admin = new Admin();
 
@@ -59,6 +57,7 @@ if (!isset($_SESSION['admin']['name'])) $action->redirect('../adminLogin.php');
             <tbody>
                 <?php
                     $result = $admin->getAllClients();
+                    // var_dump($result);
                     $int = 1;
                     foreach($result as $res){
                 ?>

@@ -8,21 +8,21 @@
 
 if (isset($databasePath)) require_once ($databasePath);
 if (isset($clientPath)) require_once ($clientPath);
-if (isset($parkingPath)) require_once ($parkingPath);
+if (isset($spacePath)) require_once ($spacePath);
 
 // require_once('./Database.class.php');
 // require_once('./Client.class.php');
-// require_once('./Parking.class.php');
+// require_once('./Space.class.php');
 
 class Ticket {
     protected $db;
-    protected $parking;
+    protected $space;
     protected $client;
 
     public function __construct() {
         $this->db = new Database();
         $this->client = new Client();
-		$this->parking = new Parking();
+		$this->space = new Space();
 	}
    
     /**
@@ -62,9 +62,7 @@ class Ticket {
    */
     public function getTicketById($id, $statusCode = 200){
         try {
-            $ticket = $this->db->query('SELECT * FROM `ticket` WHERE id = ?', array($id))->fetchArray();
-            if(empty($ticket)) return 'Cant find ticket with that id';
-            return $ticket;
+            return $this->db->query('SELECT * FROM `ticket` WHERE `ticket`.`id` = ?', array($id))->fetchArray();
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -72,14 +70,14 @@ class Ticket {
     }
    
    /**
-   * This function gets ticket by a park by id
+   * This function gets ticket by space id
    * @param $id Id of the ticket
    * @param $statusCode 
    * @return Array
    */
-    public function getTicketByParkingId($parkingId, $statusCode = 200){
+    public function getTicketBySpaceId($spaceId, $statusCode = 200){
         try {
-            return $this->db->query('SELECT * FROM `ticket` WHERE `parking_id` = ?', array($parkingId))->fetchAll();
+            return $this->db->query('SELECT * FROM `ticket` WHERE `ticket`.`space_id` = ?', array($spaceId))->fetchAll();
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -87,21 +85,14 @@ class Ticket {
     }
    
    /**
-   * This function gets ticket by a park by id
-   * @param $id Id of the ticket
-   * @param $statusCode 
+   * This function gets ticket by client id
+   * @param id Id of the ticket
+   * @param statusCode 
    * @return Array
    */
     public function getTicketByClientId($clientId, $statusCode = 200){
         try {
-            $result = $this->db->query('SELECT * FROM `ticket` WHERE `client_id` = ?', array($clientId))->fetchAll();
-            $tickets = array();
-            foreach ($result as $ticket) {
-                $park = $this->parking->getParkById($ticket['parking_id']);
-                $parkAndTicketId = array($park, $ticket['id']);
-                if (!empty($park) && is_array($park)) array_push($tickets, $parkAndTicketId);
-            }
-            return $tickets;
+            return $this->db->query('SELECT * FROM `ticket` WHERE `ticket`.`client_id` = ?', array($clientId))->fetchAll();
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -109,54 +100,56 @@ class Ticket {
     }
 
     /**
-   * This function buy a ticket
-   * @param $clientId 
-   * @param $parkingId 
-   * @param $noOfTickets 
-   * @param $statusCode 
+   * This function gets with a particular location id
+   * @param id Id of the ticket
+   * @param statusCode 
    * @return Array
    */
-    public function buyTicket($clientId,$parkingId, $noOfTickets, $statusCode = 200){
-        if (!$clientId || !$parkingId || !$noOfTickets) return "Please fill all available inputs";
-        try{
-            $park = $this->parking->getParkById($parkingId);
-            $tickets = $this->getTicketByParkingId($parkingId);
-            $data = 0;
-            if (is_array($tickets)) foreach($tickets as $ticket){ $data +=$ticket['tickets']; };
-            /** Check if parking space is available */
-            if ($data >= $park['available_ticket']) {
-                // Update parking availability
-                $this->parking->updateAvailability($parkingId, 0);
-                return 'Ticket not available';
-            };
-            if ($park['available'] == true) {
-                $cTicket = $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkingId, $noOfTickets));
-                $insertedId = $cTicket->lastInsertID();
-                return $this->getTicketById($insertedId);
-            }
-            return "Parking space is currently not available";
-        }catch (Exception $e) {
+    public function getTicketByLocationId($locationId, $statusCode = 200){
+        try {
+            return $this->db->query('SELECT * FROM `ticket` WHERE `ticket`.`location_id` = ?', array($locationId))->fetchAll();
+        } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
         }
     }
 
     /**
-   * This function reverses purchase
-   * @param tickets Id of the park
-   * @param parkId Id of the park
-   * @param clientId Login user id
+   * This function gets with a particular location id
+   * @param client Id of the login client
+   * @param statusCode 
    * @return Array
    */
-    public function bookParking($tickets, $parkId, $clientId, $statusCode = 200){
-        if (empty($tickets) || empty($parkId) || empty($clientId)) return "Please fill function required data";
+    public function getClientSpace($clientId, $statusCode = 200){
+        try {
+            $tickets = $this->getTicketByClientId($clientId);
+            $result = array();
+            foreach ($tickets as $ticket) {
+                $result[] = $this->space->getSpaceById($ticket['space_id']);
+            }
+            if (!empty($result)) return $result;
+            return 'Book a ticket';
+        } catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+
+    /**
+   * This function add user data to the ticket table
+   * @param spaceNo Number of parking space
+   * @param clientId Id of client
+   * @param locationId Location id
+   * @return Array
+   */
+    public function bookParking($spaceId, $clientId, $locationId, $statusCode = 200){
+        if (empty($spaceId) || empty($clientId) || empty($locationId)) return "Please retry!!";
         try{
-            $this->db->query('INSERT INTO `ticket` (`client_id`,`parking_id`,`tickets`) VALUES (?,?,?)', array($clientId, $parkId, $tickets));
-            $res = $this->client->updateClientTicket($clientId, $tickets);
-            $res1 = $this->parking->updateParkingSpot($parkId, $tickets);
+            $this->db->query('INSERT INTO `ticket` (`client_id`,`location_id`,`space_id`) VALUES (?,?,?)', array($clientId, $locationId, $spaceId));
+            $res = $this->client->updateClientTicket($clientId);
+            $this->space->updateSpaceStatus($spaceId);
             if (is_string($res)) return $res;
-            if (is_string($res1)) return $res1;
-            if (is_array($res) && is_array($res1)) return $res1;
+            if (is_array($res)) return $res;
             return "Process failed please try again";
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());

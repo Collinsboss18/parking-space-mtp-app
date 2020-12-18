@@ -19,7 +19,7 @@ class Admin {
     /** Construct __construct */
     public function __construct() {
 		$this->db = new Database();
-		$this->encrypt = new Encryption();
+        $this->encrypt = new Encryption();
 	}
 
    /**

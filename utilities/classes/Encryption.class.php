@@ -28,7 +28,7 @@ class Encryption {
    */
     public function verifyPassword($value, $id){
         try {
-            $res = $this->db->query('SELECT `password` FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
+            $res = $this->db->query('SELECT `password` FROM `user` WHERE id = ? LIMIT 1', array($id))->fetchArray();
             if (password_verify($value, $res['password'])) return true;
             return false;
         } catch (Exception $e) {

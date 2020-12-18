@@ -12,45 +12,44 @@ if (isset($encryptionPath)) require_once ($encryptionPath);
 // require_once('./Database.class.php');
 // require_once('./Encryption.class.php');
 
-class Parking {
+class Location {
     protected $db;
 
     /** Construct __construct */
     public function __construct() {
 		$this->db = new Database();
 	}
-
-   /**
+    
+    /**
    * This function gets all parks
    * @param $statusCode 
    * @return Array
    */
-    public function getAllPark($statusCode = 200){
+    public function getLocations($statusCode = 200){
         try{
-            return $this->db->query('SELECT * FROM `parking`')->fetchAll();
+            return $this->db->query('SELECT * FROM `location`')->fetchAll();
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
         }
     }
-   
+
     /**
    * This function gets a park by id
    * @param $id Id of the park
    * @param $statusCode 
    * @return Array
    */
-    public function getParkById($id, $statusCode = 200){
+    public function getLocationById($id, $statusCode = 200){
         try {
-            $park = $this->db->query('SELECT * FROM `parking` WHERE id = ?', array($id))->fetchArray();
-            if(empty($park)) return 'Cant find park with that id';
-            return $park;
+            $park = $this->db->query('SELECT `name` FROM `location` WHERE id = ?', array($id))->fetchArray();
+            return $park['name'];
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
         }
     }
-
+   
     /**
    * This function gets a park by id
    * @param $id Id of the park
@@ -92,7 +91,7 @@ class Parking {
         if (!$location || !$timeAvailable || $price || $availableTicket) return"Please fill required data";
         try{
             $this->db->query("UPDATE `parking` SET `location`= ?, `price`=?, `available`=?, `available_ticket`=? `always_available`=?, `time_available`=? WHERE `id` = $id", array($location, $price, $available, $availableTicket, $alwaysAvailable, $timeAvailable));
-            return $this->getParkById($id);
+            // return $this->getParkById($id);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -108,7 +107,7 @@ class Parking {
     public function updateAvailability($id, $available, $statusCode = 200){
         try{
             $this->db->query("UPDATE `parking` SET `available` = ? WHERE `parking`.`id` = $id", array($available));
-            return $this->getParkById($id);
+            // return $this->getParkById($id);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -129,7 +128,7 @@ class Parking {
         try{
             $cPark = $this->db->query('INSERT INTO `parking` (`location`,`price`,`available_ticket`,`always_available`,`time_available`) VALUES (?,?,?,?,?)', array($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable));
             $insertedId = $cPark->lastInsertID();
-            return $this->getParkById($insertedId);
+            // return $this->getParkById($insertedId);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -161,7 +160,7 @@ class Parking {
     public function updateParkingSpot($parkId, $tickets, $statusCode = 200){
         if (empty($parkId) || empty($tickets)) return "Please fill all required function params";
         try{
-            $park = $this->getParkById($parkId);
+            // $park = $this->getParkById($parkId);
             if ($park['available_spot'] <= 0) return "All spots are already booked";
             $noSpot = $park['available_spot'] - $tickets;
             $this->db->query("UPDATE `parking` SET `available_spot` = ? WHERE `parking`.`id` = $parkId", array($noSpot));

@@ -85,6 +85,11 @@ if (isset($_POST['book'])) {
     }
 }
 
+if (isset($_POST['logout'])) {
+    $action->logout();
+    $action->redirect('../../client/Index.php');
+}
+
 // if (isset($_POST['reverse'])) {
 //     try {
 //         if (empty($_POST['ticketId'])) $action->flash('Invalid ticketId');

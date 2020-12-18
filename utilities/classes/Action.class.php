@@ -19,6 +19,15 @@ class Action {
     }
 
     /**
+     * This method logout a user
+     * @param $statusCode 
+     */
+    function logout($statusCode = 303){
+        if (isset($_SESSION['client'])) unset($_SESSION['client']);
+        if (isset($_SESSION['admin'])) unset($_SESSION['admin']);
+    }
+
+    /**
      * This method creates a flash message
      * @param $msg
      */

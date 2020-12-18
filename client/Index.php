@@ -35,6 +35,9 @@ if (!isset($_SESSION['client'])) $action->redirect('../login.php');
             <p class="lead">
                 Welcome <?= $_SESSION['client']['name'] ?> to Packing Space MTP App. You can buy tickets, book and view available packing space.
             </p>
+            <form action="../utilities/handler/formHandler.php" method="post">
+                <button class="btn btn-danger btn-sm" name='logout'>Logout</button>
+            </form>
         </div>
 
         <br>
@@ -73,15 +76,18 @@ if (!isset($_SESSION['client'])) $action->redirect('../login.php');
                             echo $location->getLocationById($res['location_id']);
                         ?></td>
                         <td><?= $res['space_no'] ?></td>
-                        <td><?= $res['date_available'] ?></td>
+                        <td><?php
+                            $dateTime = strtotime($res['date_available']);
+                            echo date('y-F-Y h:i:s', $dateTime);
+                        ?></td>
                         <td>
                             <?php if ($res['status'] === 0) { ?>
                             <form action="../utilities/handler/formHandler.php" method="post">
-                                <button type="submit" name="book" class="btn btn-danger btn-sm disabled" title='Not available' disabled>Book X</button>
+                                <button type="submit" name="book" class="btn btn-danger btn-sm disabled" title='Not available' disabled>Booked X</button>
                             </form>
                             <?php } elseif ($cTicket <= 0) { ?>
                                 <form action="../utilities/handler/formHandler.php" method="post">
-                                    <button type="submit" name="book" class="btn btn-warning btn-sm disabled" title='You are out of tickets' disabled>Book X</button>
+                                    <button type="submit" name="book" class="btn btn-warning btn-sm disabled" title='You are out of tickets' disabled>No Ticket</button>
                                 </form>
                             <?php } else { ?>
                                 <form action="../utilities/handler/formHandler.php" method="post">

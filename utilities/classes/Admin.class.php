@@ -73,7 +73,7 @@ class Admin {
    */
     public function getClientsById($id, $statusCode = 200){
         try{
-            $res = $this->db->query('SELECT * FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
+            $res = $this->db->query('SELECT * FROM `user` WHERE id = ? LIMIT 1', array($id))->fetchArray();
             if (is_array($res) && !empty($res)){
                 return $res;
             }
@@ -93,12 +93,12 @@ class Admin {
     public function toggleActive($clientId, $statusCode = 200){
         try{
             $res = $this->getClientsById($clientId);
-            if ($res['active'] == 1) {
-                $this->db->query("UPDATE `clients` SET `active`= ? WHERE `id` = $clientId", array(0));
+            if ($res['is_active'] == 1) {
+                $this->db->query("UPDATE `user` SET `is_active`= ? WHERE `id` = $clientId", array(0));
                 return FALSE;
             }
-            if ($res['active'] == 0) {
-                $this->db->query("UPDATE `clients` SET `active`= ? WHERE `id` = $clientId", array(1));
+            if ($res['is_active'] == 0) {
+                $this->db->query("UPDATE `user` SET `is_active`= ? WHERE `id` = $clientId", array(1));
                 return TRUE;
             }
             return "User is not an admin";

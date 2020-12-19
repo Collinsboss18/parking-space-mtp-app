@@ -9,7 +9,6 @@
 if (isset($databasePath)) require_once ($databasePath);
 
 // require_once('./Database.class.php');
-// require_once('./Encryption.class.php');
 
 class Space {
     protected $db;
@@ -47,6 +46,24 @@ class Space {
             return $e;
         }
     }
+
+    /**
+   * This function to create a location
+   * @param locationId
+   * @param spotNo
+   * @return Array
+   */
+    public function createSpot($locationId, $spaceNo, $statusCode = 200){
+        if (empty($locationId)) return "Please fill required method params";
+        try{
+            $res = $this->db->query("INSERT INTO `space` (`location_id`,`space_no`,`status`,`date_available`) VALUES (?,?,?,now());", array($locationId, $spaceNo, 1));
+            $spaceId = $this->db->lastInsertID($res);
+            return $this->getSpaceById($spaceId);
+        }catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
     
     /**
    * This function all available parking space
@@ -65,4 +82,4 @@ class Space {
 }
 
 // $parking = new Space();
-// $parking->getAllUserPark(1);
+// $parking->createSpot(5, 6);

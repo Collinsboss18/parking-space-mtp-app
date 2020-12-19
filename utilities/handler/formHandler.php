@@ -9,11 +9,15 @@ require_once('../classes/Action.class.php');
 require_once('../classes/Admin.class.php');
 require_once('../classes/Client.class.php');
 require_once('../classes/Ticket.class.php');
+require_once('../classes/Location.class.php');
+require_once('../classes/Space.class.php');
 
 $action = new Action();
 $admin = new Admin();
 $client = new Client();
 $ticket = new Ticket();
+$location = new Location();
+$space = new Space();
 
 if (isset($_POST['signup'])) {
     try {
@@ -41,7 +45,7 @@ if (isset($_POST['login'])) {
             $_SESSION['client']['id'] = $res[0]['id'];
             $_SESSION['client']['name'] = $res[0]['name'];
             $_SESSION['client']['email'] = $res[0]['email'];
-            $action->redirect('../../client/Index.php');
+            $action->redirect('../../client/index.php');
         };
         $action->flash('Invalid email or password');
         if (is_string($res)) $action->flash($res);
@@ -78,7 +82,7 @@ if (isset($_POST['book'])) {
         $res = $ticket->bookParking($_POST['spaceId'], $_POST['clientId'], $_POST['locationId']);
         if (is_string($res)) $action->cFlash($res);
         if (is_array($res)) $action->cFlash('Successful parking space booked');
-        $action->redirect('../../client/Index.php');
+        $action->redirect('../../client/index.php');
     } catch (Exception $e) {
         // throw new Exception($e->errorMessage());
         return $e;
@@ -86,30 +90,51 @@ if (isset($_POST['book'])) {
 }
 
 if (isset($_POST['logout'])) {
-    $action->logout();
-    $action->redirect('../../client/Index.php');
+    try {
+        $action->logout();
+        $action->redirect('../../client/index.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
 }
 
-// if (isset($_POST['reverse'])) {
-//     try {
-//         if (empty($_POST['ticketId'])) $action->flash('Invalid ticketId');
-//         $res = $ticket->reversePurchase($_POST['ticketId']);
-//         if (is_string($res)) $action->flash($res);
-//         $action->redirect('../../client/Index.php');
-//     } catch (Exception $e) {
-//         // throw new Exception($e->errorMessage());
-//         return $e;
-//     }
-// }
+if (isset($_POST['tActive'])) {
+    try {
+        $admin->toggleActive($_POST['clientId']);
+        $action->aFlash('User toggled successfully');
+        $action->redirect('../../admin/index.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
+}
 
-// if (isset($_POST['tActive'])) {
-//     try {
-//         $admin->toggleActive($_POST['clientId']);
-//         $action->redirect('../../admin/Index.php');
-//     } catch (Exception $e) {
-//         // throw new Exception($e->errorMessage());
-//         return $e;
-//     }
-// }
+if (isset($_POST['cLocation'])) {
+    try {
+        $action->aFlash('Fill all required input');
+        if (empty($_POST['location'])) $action->redirect('../../admin/index.php');
+        $res = $location->createLocation($_POST['location']);
+        if (is_string($res)) $action->aFlash($res);
+        $action->redirect('../../admin/index.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
+}
 
-// $action->redirect('../../client/Index.php');
+if (isset($_POST['cSpot'])) {
+    try {
+        $action->aFlash('Fill all required input');
+        if (empty($_POST['location']) || empty($_POST['spot'])) $action->redirect('../../admin/index.php');
+        $res = $space->createSpot($_POST['location'], $_POST['spot']);
+        if (is_string($res)) $action->aFlash($res);
+        if (is_array($res)) $action->aFlash('Successful parking spot created');
+        $action->redirect('../../admin/index.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
+}
+
+// $action->redirect('../../client/index.php');

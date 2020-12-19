@@ -49,102 +49,18 @@ class Location {
             return $e;
         }
     }
-   
-    /**
-   * This function gets a park by id
-   * @param $id Id of the park
-   * @param $statusCode 
-   * @return Array
-   */
-    public function getAllClientPark($id, $statusCode = 200){
-        try {
-            $tickets = $this->db->query('SELECT `parking_id`, `tickets`, `status` FROM `ticket` WHERE `client_id` = ?', array($id))->fetchAll();
-            $parks = array();
-            foreach ($tickets as $ticket){
-                $park =  $this->db->query('SELECT * FROM `parking` WHERE `id` = ?', array($ticket['parking_id']))->fetchAll();
-                $res = array();
-                $res[] = $park;
-                $res[] = $ticket['tickets'];
-                $res[] = $ticket['status'];
-                $parks[] = $res;
-            }
-            if(empty($parks)) return 'Book a park';
-            return $parks;
-        } catch (Exception $e) {
-            // throw new Exception($e->errorMessage());
-            return $e;
-        }
-    }
 
-   /**
-   * This function updates a park
-   * @param $id Id of the park
-   * @param $location
-   * @param $price
-   * @param $available
-   * @param $availableTicket
-   * @param $alwaysAvailable
-   * @param $timeAvailable
-   * @return Array
-   */
-    public function updatePark($id, $location, $price, $available, $availableTicket, $alwaysAvailable, $timeAvailable, $statusCode = 200){
-        if (!$location || !$timeAvailable || $price || $availableTicket) return"Please fill required data";
-        try{
-            $this->db->query("UPDATE `parking` SET `location`= ?, `price`=?, `available`=?, `available_ticket`=? `always_available`=?, `time_available`=? WHERE `id` = $id", array($location, $price, $available, $availableTicket, $alwaysAvailable, $timeAvailable));
-            // return $this->getParkById($id);
-        }catch (Exception $e) {
-            // throw new Exception($e->errorMessage());
-            return $e;
-        }
-    }
-
-   /**
-   * This function updates a park
-   * @param $id Id of the park
-   * @param $available
-   * @return Array
-   */
-    public function updateAvailability($id, $available, $statusCode = 200){
-        try{
-            $this->db->query("UPDATE `parking` SET `available` = ? WHERE `parking`.`id` = $id", array($available));
-            // return $this->getParkById($id);
-        }catch (Exception $e) {
-            // throw new Exception($e->errorMessage());
-            return $e;
-        }
-    }
-   
     /**
-   * This function to create park
-   * @param $id Id of the park
-   * @param $location
-   * @param $availableTicket
-   * @param $alwaysAvailable
-   * @param $timeAvailable
+   * This function to create a location
+   * @param location location name
    * @return Array
    */
-    public function createPark($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable, $statusCode = 201){
-        if (!$location || !$timeAvailable || $price || $availableTicket) return "Please fill required data";
+    public function createLocation($location, $statusCode = 200){
+    if (empty($location)) return "Please fill required method params";
         try{
-            $cPark = $this->db->query('INSERT INTO `parking` (`location`,`price`,`available_ticket`,`always_available`,`time_available`) VALUES (?,?,?,?,?)', array($location, $price, $availableTicket, $alwaysAvailable, $timeAvailable));
-            $insertedId = $cPark->lastInsertID();
-            // return $this->getParkById($insertedId);
-        }catch (Exception $e) {
-            // throw new Exception($e->errorMessage());
-            return $e;
-        }
-    }
-   
-    /**
-   * This function to delete a park
-   * @param $id Id of the park that is to be deleted
-   * @return String
-   */
-    public function deletePark($id, $statusCode = 200){
-        if (!$id) return "Please fill required data";
-        try{
-            $this->db->query('DELETE FROM `parking` WHERE `id`=?', array($id));
-            return "Successfully deleted park";
+            $res = $this->db->query("INSERT INTO `location` (`name`) VALUES (?);", array($location));
+            $locationId = $this->db->lastInsertID($res);
+            return $this->getLocationById($locationId);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
@@ -153,24 +69,38 @@ class Location {
 
     /**
    * This function to update number of parking spot
-   * @param parkId Id of the park that is to be updated
-   * @param tickets number of tickets
+   * @param locationId Id of the location
+   * @param location location name
    * @return Array
    */
-    public function updateParkingSpot($parkId, $tickets, $statusCode = 200){
-        if (empty($parkId) || empty($tickets)) return "Please fill all required function params";
+    public function updateLocation($locationId, $location, $statusCode = 200){
+        if (empty($locationId) || empty($location)) return "Please fill required method params";
         try{
-            // $park = $this->getParkById($parkId);
-            if ($park['available_spot'] <= 0) return "All spots are already booked";
-            $noSpot = $park['available_spot'] - $tickets;
-            $this->db->query("UPDATE `parking` SET `available_spot` = ? WHERE `parking`.`id` = $parkId", array($noSpot));
-            return $park;
+            $this->db->query("UPDATE `location` SET `name` = ? WHERE `location`.`id` = $locationId", array($location));
+            return $this->getLocationById($locationId);
         }catch (Exception $e) {
             // throw new Exception($e->errorMessage());
             return $e;
         }
     }
+   
+    /**
+   * This function to delete a park
+   * @param locationId Id of the park that is to be deleted
+   * @return String
+   */
+    public function deleteLocation($locationId, $statusCode = 200){
+        if (!$locationId) return "Please fill required method param";
+        try{
+            $this->db->query('DELETE FROM `location` WHERE `location`.`id`=?', array($locationId));
+            return "Successfully deleted location";
+        }catch (Exception $e) {
+            // throw new Exception($e->errorMessage());
+            return $e;
+        }
+    }
+
 }
 
-// $parking = new Parking();
-// $parking->getAllUserPark(1);
+// $location = new Location();
+// $location->createLocation('Kubwa center park');

@@ -137,4 +137,18 @@ if (isset($_POST['cSpot'])) {
     }
 }
 
+if (isset($_POST['uTicket'])) {
+    try {
+        $action->aFlash('Fill all required input');
+        if (empty($_POST['clientId']) || empty($_POST['ticket'])) $action->redirect('../../admin/index.php');
+        $res = $admin->updateTicket($_POST['clientId'], $_POST['ticket']);
+        if (is_string($res)) $action->aFlash($res);
+        if (is_array($res)) $action->aFlash('Successful updated client ticket');
+        $action->redirect('../../admin/index.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
+}
+
 // $action->redirect('../../client/index.php');

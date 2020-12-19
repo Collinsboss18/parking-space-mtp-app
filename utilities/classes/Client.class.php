@@ -73,7 +73,7 @@ class Client {
 
    /**
    * This function gets a client by id
-   * @param $clientId Id of the client
+   * @param clientId Id of the client
    * @param $statusCode 
    * @return Array
    */

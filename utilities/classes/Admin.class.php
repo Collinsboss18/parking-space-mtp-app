@@ -8,6 +8,7 @@
 
 if (isset($databasePath)) require_once ($databasePath);
 if (isset($encryptionPath)) require_once ($encryptionPath);
+if (isset($clientPath)) require_once ($clientPath);
 
 // include ('./Database.class.php');
 // include ('./Encryption.class.php');
@@ -15,11 +16,13 @@ if (isset($encryptionPath)) require_once ($encryptionPath);
 class Admin {
     protected $db;
     protected $encrypt;
+    protected $client;
 
     /** Construct __construct */
     public function __construct() {
 		$this->db = new Database();
         $this->encrypt = new Encryption();
+        $this->client = new Client();
 	}
 
    /**
@@ -64,35 +67,16 @@ class Admin {
             return $e;
         }
     }
-    
-    /**
-     * This function that get all clients
-     * @param id Id of the client
-     * @param $statusCode 
-     * @return Array
-   */
-    public function getClientsById($id, $statusCode = 200){
-        try{
-            $res = $this->db->query('SELECT * FROM `user` WHERE id = ? LIMIT 1', array($id))->fetchArray();
-            if (is_array($res) && !empty($res)){
-                return $res;
-            }
-            return "Cannot find user with that Id";
-        }catch (Exception $e) {
-            // throw new Exception($e);
-            return $e;
-        }
-    }
 
    /**
    * This function deactivate and activate clients
    * @param id Id of the client
-   * @param $statusCode 
+   * @param $statusCode
    * @return Boolean
    */
     public function toggleActive($clientId, $statusCode = 200){
         try{
-            $res = $this->getClientsById($clientId);
+            $res = $this->client->getClientById($clientId);
             if ($res['is_active'] == 1) {
                 $this->db->query("UPDATE `user` SET `is_active`= ? WHERE `id` = $clientId", array(0));
                 return FALSE;
@@ -118,6 +102,23 @@ class Admin {
         try{
             $res = $this->db->query('SELECT `is_admin` FROM `clients` WHERE id = ?', array($id))->fetchArray();
             return $res['is_admin'];
+        }catch (Exception $e) {
+            // throw new Exception($e);
+            return $e;
+        }
+    }
+
+    /**
+   * This function add and removes clients as an admin
+   * @param clientId Id of the client
+   * @param noTicket
+   * @param $statusCode 
+   * @return Boolean
+   */
+    public function updateTicket($clientId, $noTicket, $statusCode = 200){
+        try{
+            $this->db->query("UPDATE `user` SET `no_ticket` = ? WHERE `user`.`id` = $clientId", array($noTicket));
+            return $res = $this->client->getClientById($clientId);
         }catch (Exception $e) {
             // throw new Exception($e);
             return $e;

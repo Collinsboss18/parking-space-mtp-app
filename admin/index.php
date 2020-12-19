@@ -63,6 +63,7 @@ if (!isset($_SESSION['admin']['name'])) $action->redirect('../adminLogin.php');
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
+                        <th scope="col">No of ticket</th>
                         <th scope="col">Status</th>
                         <th scope="col">Toggle Active</th>
                         </tr>
@@ -77,13 +78,20 @@ if (!isset($_SESSION['admin']['name'])) $action->redirect('../adminLogin.php');
                                 <th scope="row"><?= $int ?></th>
                                 <td><?= $res['name'] ?></td>
                                 <td><?= $res['email'] ?></td>
+                                <td>
+                                    <form action="../utilities/handler/formHandler.php" method="post">
+                                        <input type="hidden" name="clientId" value="<?= $res['id'] ?>">
+                                        <input type="number" name="ticket" value='<?= $res['no_ticket'] ?>' required />
+                                        <input type="submit" value="change" name='uTicket' class="btn btn-primary btn-sm">
+                                    </form>
+                                </td>
                                 <td><?php
                                     if($res['is_active'] == true) { echo 'User Active'; } else { echo 'User Disabled'; };
                                 ?></td>
                                 <td>
                                     <form action="../utilities/handler/formHandler.php" method="post">
                                         <input type="hidden" name="clientId" value="<?= $res['id'] ?>">
-                                        <button type="text" name="tActive" class="btn btn-danger btn-sm">Toggle</button>
+                                        <button type="submit" name="tActive" class="btn btn-danger btn-sm">Toggle</button>
                                     </form>
                                 </td>
                             </td>

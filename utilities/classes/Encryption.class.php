@@ -14,22 +14,23 @@ class Encryption {
 	}
     /**
    * This function encodes
-   * @param $value Value of what is to be hash
-   * @return Hashed value
+   * @param value: Value of what is to be hash
+   * @return Hashed: BCRYPT
    */
     public function encode($value){ 
         return password_hash($value, PASSWORD_BCRYPT);
     }
 
     /**
-   * This function decodes
-   * @param $value Value of what is to be verified
+   * This function verifies password
+   * @param userId 
+   * @param password: Value of what is to be verified
    * @return Boolean
    */
-    public function verifyPassword($value, $id){
+    public function verifyPassword($password, $id){
         try {
             $res = $this->db->query('SELECT `password` FROM `user` WHERE id = ? LIMIT 1', array($id))->fetchArray();
-            if (password_verify($value, $res['password'])) return true;
+            if (password_verify($password, $res['password'])) return true;
             return false;
         } catch (Exception $e) {
             // throw new Exception($e->errorMessage());

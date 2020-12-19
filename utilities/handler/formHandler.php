@@ -6,12 +6,12 @@ $clientPath = '../classes/Client.class.php';
 $spacePath = '../classes/Space.class.php';
 
 require_once('../classes/Action.class.php');
-// require_once('../classes/Admin.class.php');
+require_once('../classes/Admin.class.php');
 require_once('../classes/Client.class.php');
 require_once('../classes/Ticket.class.php');
 
 $action = new Action();
-// $admin = new Admin();
+$admin = new Admin();
 $client = new Client();
 $ticket = new Ticket();
 
@@ -52,25 +52,25 @@ if (isset($_POST['login'])) {
     }
 }
 
-// if (isset($_POST['aLogin'])) {
-//     try {
-//         $action->flash('Fill all required input');
-//         if (empty($_POST['email']) || empty($_POST['password'])) $action->redirect('../../login.php');
-//         $res = $admin->adminLogin($_POST['email'], $_POST['password']);
-//         if (is_array($res)) {
-//             $_SESSION['admin']['id'] = $res[0]['id'];
-//             $_SESSION['admin']['name'] = $res[0]['name'];
-//             $_SESSION['admin']['email'] = $res[0]['email'];
-//             $action->redirect('../../admin/index.php');
-//         };
-//         $action->flash('Invalid email or password');
-//         if (is_string($res)) $action->flash($res);
-//         $action->redirect('../../adminLogin.php');
-//     } catch (Exception $e) {
-//         // throw new Exception($e->errorMessage());
-//         return $e;
-//     }
-// }
+if (isset($_POST['aLogin'])) {
+    try {
+        $action->flash('Fill all required input');
+        if (empty($_POST['email']) || empty($_POST['password'])) $action->redirect('../../login.php');
+        $res = $admin->adminLogin($_POST['email'], $_POST['password']);
+        if (is_array($res)) {
+            $_SESSION['admin']['id'] = $res[0]['id'];
+            $_SESSION['admin']['name'] = $res[0]['name'];
+            $_SESSION['admin']['email'] = $res[0]['email'];
+            $action->redirect('../../admin/index.php');
+        };
+        $action->flash('Invalid email or password');
+        if (is_string($res)) $action->flash($res);
+        $action->redirect('../../adminLogin.php');
+    } catch (Exception $e) {
+        // throw new Exception($e->errorMessage());
+        return $e;
+    }
+}
 
 if (isset($_POST['book'])) {
     try {

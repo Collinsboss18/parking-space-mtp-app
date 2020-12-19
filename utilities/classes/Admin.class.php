@@ -31,11 +31,12 @@ class Admin {
    */
     public function adminLogin($email, $password, $statusCode = 200){
         if (!$email || !$password) return 'Fill all available input';
+
         try {
-            $res = $this->db->query('SELECT * FROM `clients` WHERE `email` = ? AND `is_admin` = ? LIMIT 1', array($email, 1))->fetchAll();
-            if(empty($res)) return 'This client is not an admin';
-            foreach ($res as $client) {
-                $newRes = $this->encrypt->verifyPassword($password, $client['id']);
+            $res = $this->db->query('SELECT * FROM `user` WHERE `email` = ? AND `role` = ? LIMIT 1', array($email, 0))->fetchAll();
+            if(empty($res)) return 'User is not an admin';
+            foreach ($res as $admin) {
+                $newRes = $this->encrypt->verifyPassword($password, $admin['id']);
                 if ($newRes) return $res;
                 return 'Invalid password';
             }
@@ -53,7 +54,7 @@ class Admin {
    */
     public function getAllClients($statusCode = 200){
         try{
-            $res = $this->db->query('SELECT * FROM `clients` WHERE `is_admin`= ?', array(0))->fetchAll();
+            $res = $this->db->query('SELECT * FROM `user` WHERE `role`= ?', array(1))->fetchAll();
             if (is_array($res) && !empty($res)){
                 return $res;
             }
@@ -146,4 +147,4 @@ class Admin {
 }
 
 // $admin = new Admin();
-// $admin->getAllClients();
+// $admin->adminLogin('admin@gmail.com', 'password');

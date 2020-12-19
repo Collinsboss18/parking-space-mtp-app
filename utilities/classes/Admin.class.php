@@ -114,27 +114,6 @@ class Admin {
    * @param $statusCode 
    * @return Boolean
    */
-    public function toggleAdmin($id, $statusCode = 200){
-        try{
-            $res = $this->db->query('SELECT * FROM `clients` WHERE id = ? LIMIT 1', array($id))->fetchArray();
-            if ($this->isAdmin($res['is_admin']) == TRUE) {
-                $res['is_admin'] == TRUE ? $is_admin = 0 : $is_admin = 1;
-                $this->db->query("UPDATE `clients` SET `is_admin`= $is_admin WHERE `id` = ?", array($id));
-                return $is_admin;
-            }
-            return "User is not an admin";
-        }catch (Exception $e) {
-            // throw new Exception($e);
-            return $e;
-        }
-    }
-   
-    /**
-   * This function add and removes clients as an admin
-   * @param id Id of the client
-   * @param $statusCode 
-   * @return Boolean
-   */
     public function isAdmin($id, $statusCode = 200){
         try{
             $res = $this->db->query('SELECT `is_admin` FROM `clients` WHERE id = ?', array($id))->fetchArray();

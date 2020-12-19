@@ -179,7 +179,6 @@ if (!isset($_SESSION['admin']['name'])) $action->redirect('../adminLogin.php');
                     </div>
                     <input type="submit" name='cLocation' class="btn btn-warning btn-sm" value="Create Location">
                 </form>
-
                 </br>
                 <h3>Create parking spots</h3>
                 <form action="../utilities/handler/formHandler.php" method="post">

@@ -126,7 +126,7 @@ if (!isset($_SESSION['admin']['name'])) $action->redirect('../adminLogin.php');
 
                 </br>
 
-                <h3>Available Parking Space</h3>
+                <h3>Parking Space</h3>
                 <table class="table">
                     <thead>
                         <tr>
@@ -134,7 +134,6 @@ if (!isset($_SESSION['admin']['name'])) $action->redirect('../adminLogin.php');
                         <th scope="col">Location</th>
                         <th scope="col">Space No</th>
                         <th scope="col">Date Available</th>
-                        <th scope="col">Book With Ticket</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -153,24 +152,6 @@ if (!isset($_SESSION['admin']['name'])) $action->redirect('../adminLogin.php');
                                     $dateTime = strtotime($res['date_available']);
                                     echo date('y-F-Y h:i:s', $dateTime);
                                 ?></td>
-                                <td>
-                                    <?php if ($res['status'] === 0) { ?>
-                                    <form action="../utilities/handler/formHandler.php" method="post">
-                                        <button type="submit" name="book" class="btn btn-danger btn-sm disabled" title='Not available' disabled>Booked X</button>
-                                    </form>
-                                    <?php } elseif ($cTicket <= 0) { ?>
-                                        <form action="../utilities/handler/formHandler.php" method="post">
-                                            <button type="submit" name="book" class="btn btn-warning btn-sm disabled" title='You have no ticket' disabled>No Ticket</button>
-                                        </form>
-                                    <?php } else { ?>
-                                        <form action="../utilities/handler/formHandler.php" method="post">
-                                            <input type="hidden" name="spaceId" value="<?= $res['id'] ?>">
-                                            <input type="hidden" name="locationId" value="<?= $res['location_id'] ?>">
-                                            <input type="hidden" name="clientId" value="<?= $_SESSION['client']['id'] ?>">
-                                            <button type="submit" name="book" class="btn btn-success btn-sm" title='Book parking space with ticket'>Book =></button>
-                                        </form>
-                                    <?php } ?>
-                                </td>
                             </tr>
                         <?php $int++; }  ?>
                     </tbody>

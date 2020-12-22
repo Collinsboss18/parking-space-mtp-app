@@ -7,7 +7,7 @@
 
 ### Project Sample
 
-###### Both users have to be authenticated to access any of the functionality
+> Both users have to be authenticated to access any of the functionality
 
 **User: Client (Dashboard)**
 
@@ -18,7 +18,7 @@ Client can
 - View Status (eg Already Taken, Booked by Me, Available)
 - And also Book Space...
 
-![image](https://imgur.com/8snQfVt)
+![image](https://files.fm/u/4y4cet5bq)
 
 **User: Admin (mtp app)**
 
@@ -27,7 +27,8 @@ Admin can
 - Modify Number of Tickets for each Client on the List of Clients, 
 - Modify number of daily available parking spaces.
 
-> Purchase is handled offline by Admin
+> Purchase is handled offline by Admin. 
+
 > Admin updates number of tickets purchased by a Clie
 
-![image](https://imgur.com/aPX7LdG)
+![image](https://files.fm/u/gjtb59yuy)

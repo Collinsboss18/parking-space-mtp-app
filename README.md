@@ -31,4 +31,4 @@ Admin can
 
 > Admin updates number of tickets purchased by a Clie
 
-![image](https://files.fm/down.php?i=9w4w2qwyy)
+![image]([URL=https://files.fm/f/ubpmbgk5s][IMG]https://files.fm/thumb_show.php?i=ubpmbgk5s[/IMG][/URL])

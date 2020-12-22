@@ -18,7 +18,7 @@ Client can
 - View Status (eg Already Taken, Booked by Me, Available)
 - And also Book Space...
 
-![image](https://files.fm/u/4y4cet5bq)
+![image](https://files.fm/f/ubpmbgk5s)
 
 **User: Admin (mtp app)**
 
@@ -31,4 +31,4 @@ Admin can
 
 > Admin updates number of tickets purchased by a Clie
 
-![image](https://files.fm/u/gjtb59yuy)
+![image](https://files.fm/f/9w4w2qwyy)
